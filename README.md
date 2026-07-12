@@ -25,6 +25,18 @@ node tools/verify.js
 
 Kein `npm install`. Null Dependencies. Pures Node.
 
+Und der Beweis, dass die Übersetzung nicht nur emittiert wird, sondern
+**lebt** — der generierte Driver, ausgeführt im echten `window.SHADED`
+(headless Chromium, Schwester-Repo `../SHADED`):
+
+```bash
+npm i --no-save playwright
+node tools/verify-live.js
+# → 10 Verhaltens-Assertions in der echten Engine: Storyboard installiert,
+#   Momente setzen Parameter, Fehlversuche lehren, der Laternen-Fund
+#   wechselt die Welt in 'Der Tag danach'. VERIFY-LIVE: PASS
+```
+
 ## Die Idee in 20 Zeilen
 
 ```js

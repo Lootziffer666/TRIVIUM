@@ -31,8 +31,17 @@ Dokumente: `docs/trivium-canon.md` (Invarianten), `docs/wir-spec.md`,
 node tools/verify.js   # 32 Tests + Beispielwelt in alle Adapter, Exit ≠ 0 bei FAIL
 ```
 
+Bei Änderungen am SHADED-Adapter oder am Driver-Generator zusätzlich der
+Beweisritt in der echten Engine (Schwester-Repo `../SHADED` erforderlich):
+
+```bash
+npm i --no-save playwright     # einmalig, dev-only, nie committen
+node tools/verify-live.js      # Driver läuft headless in echtem window.SHADED
+```
+
 `tools/verify-out/` wird nie committet. Null Runtime-Dependencies — kein
-`npm install` einführen.
+`npm install` für den Kern einführen (Playwright bleibt dev-only via
+`--no-save`; weder `node_modules/` noch ein `package-lock.json` committen).
 
 ## Cross-Repo-Verträge
 
