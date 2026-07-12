@@ -86,6 +86,11 @@ const server = http.createServer((req, res2) => {
     ok(await page.evaluate(() => window.TRIVIUM_DRIVER && window.TRIVIUM_DRIVER.worldId === "dorf-sturmnacht"),
       "TRIVIUM_DRIVER lebt und kennt seine Welt");
 
+    // SHADEDs EIGENES Default-Storyboard sichern, bevor installArc es
+    // überschreibt — Rohstoff für die Rückübersetzung (Schritt 7).
+    const nativeBoard = await page.evaluate(() =>
+      window.SHADED.story.board().map((s) => ({ name: s.name, dur: s.dur, p: { ...s.p } })));
+
     // Storyboard: installArc schreibt in die LIVE-Referenz story.board()
     const board = await page.evaluate(() => {
       window.TRIVIUM_DRIVER.installArc();
@@ -183,6 +188,28 @@ const server = http.createServer((req, res2) => {
     await page.waitForTimeout(1500);
     const playing = await page.evaluate(() => window.SHADED.getParams());
     ok(typeof playing.dayNight === "number", "story.play() läuft (Parameter blenden)");
+
+    // ── 7. Voller Kreis: die Engine selbst wird rückübersetzt ───────────
+    // SHADEDs live gezogenes Default-Storyboard → WIR → Ren'Py.
+    // Engine-Oberflächenform wird Bedeutung, Bedeutung wird andere Engine.
+    const { importStoryboard } = require(path.join(ROOT, "adapters/shaded/importer"));
+    const renpyAdapter = require(path.join(ROOT, "adapters/renpy/adapter")).adapter;
+    const circle = (() => {
+      const { world, report } = importStoryboard(
+        { id: "shaded-default-story", title: "SHADEDs eigene Erzählung" }, nativeBoard);
+      const reg2 = T.createRegistry();
+      reg2.register(renpyAdapter);
+      const rpy = T.translate(world, "renpy", reg2).artifacts.find((a) => a.path.endsWith(".rpy"));
+      return { world, report, rpy };
+    })();
+    ok(circle.world.rhetoric.moments.length === nativeBoard.length && nativeBoard.length >= 10,
+      `Rückübersetzung: ${nativeBoard.length} live gezogene SHADED-Akte wurden WIR-Momente`);
+    ok(circle.rpy.content.includes("label trivium_sturmnacht:") && circle.rpy.content.includes("Blitz"),
+      "voller Kreis: SHADEDs eigene Erzählung spricht jetzt Ren'Py",
+      circle.rpy.content.split("\n").filter((l) => l.startsWith("label ")).join(", "));
+    ok(circle.report.losses.some((l) => l.param === "flash"),
+      "Import-Verluste dokumentiert: 'flash' hat kein Bedeutungs-Gegenstück und wird nicht geraten");
+    fs.writeFileSync(path.join(outDir, "shaded-default-story_trivium.rpy"), circle.rpy.content);
 
     ok(errors.length === 0, "keine Konsolen-/GL-Fehler", errors.join(" | "));
   } catch (err) {

@@ -19,7 +19,7 @@ Registern.
 
 ```bash
 node tools/verify.js
-# → 41 Tests, dann beide Beispielwelten in alle vier Zielsprachen:
+# → 46 Tests, dann beide Beispielwelten in alle vier Zielsprachen:
 #   tools/verify-out/{shaded,godot,love2d,renpy}/ mit Artefakten + TRANSLATION_REPORT.md
 ```
 
@@ -44,7 +44,7 @@ Und der Beweis, dass die Übersetzung nicht nur emittiert wird, sondern
 ```bash
 npm i --no-save playwright
 node tools/verify-live.js
-# → 13 Verhaltens-Assertions in der echten Engine: Storyboard installiert,
+# → 16 Verhaltens-Assertions in der echten Engine: Storyboard installiert,
 #   Momente setzen Parameter, Fehlversuche lehren, der Laternen-Fund
 #   wechselt die Welt in 'Der Tag danach', die Wächterin betritt als
 #   Actor sichtbar die Szene. Screenshots: tools/verify-out/live_*.png
@@ -81,6 +81,15 @@ ergibt eine Godot-Szene + GDScript-Weltskript, ein lauffähiges
 LÖVE-Scaffold oder einen Ren'Py-Flow mit verdeckter Beziehungslogik. Was
 eine Zielsprache nicht sagen kann, sagt stattdessen ihr Ledger.
 
+Und es geht auch **rückwärts** (`adapters/shaded/importer.js`): ein
+SHADED-Storyboard — live aus `window.SHADED.story.board()` gezogen — wird
+zurück auf Bedeutung gehoben (`paramsToIntents`: dayNight → timeOfDay,
+temperature → 1−coldness, snowfall → precipitation bei Kälte) und dann in
+jede andere Sprache übersetzt. Engine → WIR → Engine, der volle Kreis;
+verify-live führt ihn bei jedem Lauf aus. Parameter ohne
+Bedeutungs-Gegenstück (`flash`, `bleach`, …) werden nicht geraten, sondern
+als Import-Verlust dokumentiert — Enthaltung gilt in beide Richtungen.
+
 ## Warum „Trivium"?
 
 | Pfeiler | In TRIVIUM | Stratum |
@@ -104,7 +113,7 @@ adapters/
   love2d/                  → main.lua + Welt-Modul
   renpy/                   → .rpy mit adult_game-Vier-Schichten-Logik
 examples/                  zwei Welten (Dorf 2.5D, Turm 3D), vier Sprachen
-test/                      41 Tests, pures Node
+test/                      46 Tests, pures Node
 tools/verify.js            alles in einem Lauf
 ```
 
