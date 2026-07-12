@@ -314,7 +314,7 @@ function buildDriver(world, steps, characters, anchors) {
   L.push(`      const a = assetResolver ? await assetResolver(slot) : slot.assets;`);
   L.push(`      if (!a || !a.image || !a.manifest) { memory.push({ hint: "actor '" + slot.id + "' waits for SWIFT assets" }); continue; }`);
   L.push(`      actors[slot.id] = await S.addActor({ image: a.image, manifest: a.manifest,`);
-  L.push(`        x: slot.x, y: slot.y, anim: slot.anim, depthLayer: slot.depthLayer,`);
+  L.push(`        x: slot.x, y: slot.y, anim: a.anim || slot.anim, depthLayer: slot.depthLayer,`);
   L.push(`        depthImage: a.depthImage || undefined, emissiveImage: a.emissiveImage || undefined });`);
   L.push(`    }`);
   L.push(`    return actors;`);

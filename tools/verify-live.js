@@ -141,6 +141,43 @@ const server = http.createServer((req, res2) => {
       "Laternen-Fund wechselt die Welt in 'Der Tag danach' (dayNight 0.04, rain 0)",
       JSON.stringify({ laterne: fund.laterne, dayNight: fund.params.dayNight, rain: fund.params.rain }));
 
+    // ── 5b. Actor-Livebeweis: die Wächterin betritt die Szene ───────────
+    // Sprite + Manifest sind SHADEDs eigene Actor-Testassets; der Driver
+    // erhält sie über den vorgesehenen assetResolver (SWIFT-Slot).
+    const actorManifest = JSON.parse(fs.readFileSync(path.join(SHADED_REPO, "tools", "verify-test-actor.json"), "utf8"));
+    const actor = await page.evaluate(async (manifest) => {
+      const ov = document.getElementById("ov");
+      const countPixels = () => {
+        const d = ov.getContext("2d").getImageData(0, 0, ov.width, ov.height).data;
+        let n = 0;
+        for (let i = 3; i < d.length; i += 4) if (d[i] > 8) n++;
+        return n;
+      };
+      const before = countPixels();
+      const assetStatus = (await fetch("tools/verify-test-actor.png")).status;
+      const actors = await window.TRIVIUM_DRIVER.spawnActors(async () => ({
+        image: "tools/verify-test-actor.png", manifest, anim: "walk",
+      }));
+      // Sprite lädt asynchron (imgReady) — geduldig auf erste Pixel warten
+      let after = 0;
+      for (let i = 0; i < 30 && !(after > before); i++) {
+        await new Promise((r) => setTimeout(r, 100));
+        after = countPixels();
+      }
+      const h = actors.waechterin;
+      return {
+        before, after, assetStatus,
+        hasHandle: !!h,
+        methods: h ? ["setAnim", "setPosition", "setVisible", "setDepthLayer", "remove"].filter((m) => typeof h[m] === "function") : [],
+      };
+    }, actorManifest);
+    ok(actor.hasHandle && actor.methods.length === 5,
+      "spawnActors(): Wächterin hat ein echtes Actor-Handle (5 API-Methoden)", JSON.stringify(actor.methods));
+    ok(actor.after > actor.before,
+      "Wächterin ist sichtbar: Overlay-Canvas hat neue Pixel",
+      `${actor.before} → ${actor.after} (asset HTTP ${actor.assetStatus})`);
+    await page.screenshot({ path: path.join(outDir, "live_wache.png"), clip: box });
+
     // ── 6. Storyboard abspielen — die Welt lebt, ohne Fehler ─────────────
     await page.evaluate(() => window.TRIVIUM_DRIVER.play());
     await page.waitForTimeout(1500);
