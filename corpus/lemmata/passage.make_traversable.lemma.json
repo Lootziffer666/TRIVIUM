@@ -1,0 +1,120 @@
+{
+  "lemmaVersion": "0.1.0",
+  "id": "passage.make_traversable",
+  "intent": "make a previously blocked passage traversable",
+  "contract": {
+    "contractVersion": "0.1.0",
+    "id": "passage.make_traversable.contract",
+    "kind": "function",
+    "source": {
+      "type": "lemma",
+      "provenance": "corpus/lemmata"
+    },
+    "inputs": [
+      "passage_state"
+    ],
+    "preconditions": [
+      "subject_exists"
+    ],
+    "reads": [
+      "passage.blocked",
+      "navigation.version"
+    ],
+    "writes": [
+      "passage.blocked",
+      "collision.enabled",
+      "navigation.version"
+    ],
+    "side_effects": [
+      "emit semantic_state_changed"
+    ],
+    "postconditions": [
+      "passage_traversable",
+      "collision_no_longer_blocks",
+      "navigation_can_cross"
+    ],
+    "error_behavior": [
+      "missing_subject_is_reported"
+    ],
+    "must_not": [
+      "visually_open_but_physically_blocked"
+    ]
+  },
+  "idioms": {
+    "unity": {
+      "constructs": [
+        "Collider.enabled=false",
+        "NavMeshSurface rebuild or obstacle disable",
+        "persistent state flag"
+      ],
+      "lifecycle": "bind during scene initialization and update through semantic state transitions",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "engine lifecycle details are not represented in lemma tests"
+      ],
+      "gains": [
+        "engine observability can expose debug state"
+      ],
+      "confidence": 0.55
+    },
+    "unreal": {
+      "constructs": [
+        "CollisionComponent set disabled",
+        "NavModifier or NavMesh rebuild",
+        "replicated state flag"
+      ],
+      "lifecycle": "bind in actor/component setup and execute through events or state changes",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "blueprint/native split is not resolved here"
+      ],
+      "gains": [
+        "editor-exposed properties can aid verification"
+      ],
+      "confidence": 0.55
+    },
+    "godot": {
+      "constructs": [
+        "CollisionShape disabled",
+        "NavigationRegion update",
+        "Resource-backed state flag"
+      ],
+      "lifecycle": "bind in scene tree readiness and react through signals or state changes",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "node ownership policy is target-specific"
+      ],
+      "gains": [
+        "signals make event traces explicit"
+      ],
+      "confidence": 0.55
+    }
+  },
+  "tests": [
+    {
+      "given": [
+        "passage is blocked",
+        "actor is before passage"
+      ],
+      "when": [
+        "make_traversable is applied"
+      ],
+      "then": [
+        "passage.blocked is false",
+        "actor can cross"
+      ]
+    },
+    {
+      "given": [
+        "passage is already traversable"
+      ],
+      "when": [
+        "make_traversable is applied again"
+      ],
+      "then": [
+        "state remains traversable",
+        "no contradictory collision state appears"
+      ]
+    }
+  ]
+}
