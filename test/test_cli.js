@@ -35,6 +35,13 @@ t("tools --list filters candidate registry by accepted format", () => {
   assert.ok(!out.includes("ludidorici-scene2sprite"));
 });
 
+
+t("plan --from/--to returns a ranked TIR plan or honest review", () => {
+  const { out } = run(["plan", "--from", "unity.package", "--to", "png.atlas"]);
+  const parsed = JSON.parse(out);
+  assert.ok(parsed.rankedPlans.length >= 1 || parsed.needs_human_review.length >= 1);
+});
+
 t("translates a .js world to one target", () => {
   const outDir = path.join(tmp, "run1");
   const { out } = run([EXAMPLE, "--target", "love2d", "--out", outDir]);

@@ -88,7 +88,7 @@ Belegte Mappings zwischen:
 
 ### Planner
 
-Plant eine Route, ohne Werkzeugdetails in die Weltwahrheit zu mischen.
+Das Planner-Skelett v0.1 ist in `packages/trivium-planner` implementiert: Capability-Graph-Suche über Format-Tokens, transparente Additivkosten und ehrliche Review-Meldungen bei fehlenden Pfaden. Es plant eine Route, ohne Werkzeugdetails in die Weltwahrheit zu mischen.
 
 ```text
 requested outcome

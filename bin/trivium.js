@@ -11,6 +11,7 @@
  *   --list                        registrierte Adapter zeigen und beenden
  *   tools --list [--accepts X] [--produces Y]
  *                                 Tool-Candidate-Registry abfragen
+ *   plan --from FORMAT --to FORMAT Toolchain-Plan suchen
  *
  * Eingabe: eine WIR als JSON (validiert durch dieselben Builder wie die
  * JS-API — ein Eingang, eine Wahrheit) oder ein .js-Modul mit build().
@@ -36,7 +37,7 @@ function runToolsCommand(args) {
     else if (a === "--accepts") opts.accepts = args[++i];
     else if (a === "--produces") opts.produces = args[++i];
     else if (a === "--help" || a === "-h") {
-      console.log("usage: trivium tools --list [--accepts FORMAT] [--produces FORMAT]");
+      console.log("usage: trivium tools --list [--accepts FORMAT] [--produces FORMAT]\n       trivium plan --from FORMAT --to FORMAT");
       process.exit(0);
     } else {
       console.error(`trivium tools: unknown option '${a}'`);
@@ -65,13 +66,46 @@ function runToolsCommand(args) {
   process.exit(0);
 }
 
+function runPlanCommand(args) {
+  const Planner = require(path.join(ROOT, "packages/trivium-planner"));
+  const C = require(path.join(ROOT, "packages/trivium-contracts"));
+  const opts = { from: null, to: null };
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === "--from") opts.from = args[++i];
+    else if (a === "--to") opts.to = args[++i];
+    else if (a === "--help" || a === "-h") {
+      console.log("usage: trivium plan --from FORMAT --to FORMAT");
+      process.exit(0);
+    } else {
+      console.error(`trivium plan: unknown option '${a}'`);
+      process.exit(1);
+    }
+  }
+  if (!opts.from || !opts.to) {
+    console.error("trivium plan: --from and --to are required");
+    process.exit(1);
+  }
+  try {
+    const tools = C.loadToolRegistry(path.join(ROOT, "registry", "tools"));
+    const result = Planner.plan({ format: opts.from }, { format: opts.to }, [], tools);
+    const printable = { ...result, totalPlans: result.rankedPlans.length, rankedPlans: result.rankedPlans.slice(0, 5) };
+    console.log(JSON.stringify(printable, null, 2));
+  } catch (err) {
+    console.error(`trivium plan: ${err.message}`);
+    process.exit(1);
+  }
+  process.exit(0);
+}
+
 if (process.argv[2] === "tools") runToolsCommand(process.argv.slice(3));
+if (process.argv[2] === "plan") runPlanCommand(process.argv.slice(3));
 
 // Das CLI kennt Adapter — der Kern nicht. Neue Engines hier registrieren.
 const BUILTIN_ADAPTERS = ["shaded", "godot", "love2d", "renpy", "unity", "unreal"];
 
 function usage(code) {
-  console.log("usage: trivium <welt.json|welt.js> [--target all|name,name] [--out dir] [--no-strict] [--list]\n       trivium tools --list [--accepts FORMAT] [--produces FORMAT]");
+  console.log("usage: trivium <welt.json|welt.js> [--target all|name,name] [--out dir] [--no-strict] [--list]\n       trivium tools --list [--accepts FORMAT] [--produces FORMAT]\n       trivium plan --from FORMAT --to FORMAT");
   process.exit(code);
 }
 
