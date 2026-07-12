@@ -29,6 +29,73 @@ for (const f of fs.readdirSync(testDir).filter((f) => f.startsWith("test_")).sor
   }
 }
 
+
+// ── 1.5 contract fixtures ───────────────────────────────────────────────
+process.stdout.write(`\n== contract fixtures ==\n`);
+try {
+  const C = require(path.join(ROOT, "packages/trivium-contracts"));
+  const contractsDir = path.join(ROOT, "examples", "contracts");
+  const fixtures = fs.existsSync(contractsDir)
+    ? fs.readdirSync(contractsDir).filter((f) => f.endsWith(".contract.json")).sort()
+    : [];
+  for (const f of fixtures) {
+    C.loadContract(fs.readFileSync(path.join(contractsDir, f), "utf8"));
+    console.log(`  ok ${f}`);
+  }
+  console.log(`contract fixtures: ${fixtures.length} passed`);
+} catch (err) {
+  failed = true;
+  console.error(`FAIL: contract fixtures: ${err.message}`);
+}
+
+
+// ── 1.6 tool registry ──────────────────────────────────────────────────
+process.stdout.write(`\n== tool registry ==\n`);
+try {
+  const C = require(path.join(ROOT, "packages/trivium-contracts"));
+  const tools = C.loadToolRegistry(path.join(ROOT, "registry", "tools"));
+  console.log(`tool registry: ${tools.size} candidates loaded`);
+  if (tools.warnings.length) {
+    failed = true;
+    for (const w of tools.warnings) console.error(`FAIL: ${w}`);
+  }
+} catch (err) {
+  failed = true;
+  console.error(`FAIL: tool registry: ${err.message}`);
+}
+
+
+// ── 1.7 lemma corpus ───────────────────────────────────────────────────
+process.stdout.write(`\n== lemma corpus ==\n`);
+try {
+  const C = require(path.join(ROOT, "packages/trivium-contracts"));
+  const lemmata = C.loadLemmaCorpus(path.join(ROOT, "corpus", "lemmata"));
+  console.log(`lemma corpus: ${lemmata.size} lemmata loaded`);
+} catch (err) {
+  failed = true;
+  console.error(`FAIL: lemma corpus: ${err.message}`);
+}
+
+
+// ── 1.8 plan fixtures ──────────────────────────────────────────────────
+process.stdout.write(`\n== plan fixtures ==\n`);
+try {
+  const C = require(path.join(ROOT, "packages/trivium-contracts"));
+  const tools = C.loadToolRegistry(path.join(ROOT, "registry", "tools"));
+  const plansDir = path.join(ROOT, "examples", "plans");
+  const fixtures = fs.existsSync(plansDir)
+    ? fs.readdirSync(plansDir).filter((f) => f.endsWith(".plan.json")).sort()
+    : [];
+  for (const f of fixtures) {
+    C.loadPlanFile(path.join(plansDir, f), tools);
+    console.log(`  ok ${f}`);
+  }
+  console.log(`plan fixtures: ${fixtures.length} passed`);
+} catch (err) {
+  failed = true;
+  console.error(`FAIL: plan fixtures: ${err.message}`);
+}
+
 // ── 2. translate every example world to every adapter ────────────────────
 const T = require(path.join(ROOT, "packages/trivium-core"));
 const examplesDir = path.join(ROOT, "examples");

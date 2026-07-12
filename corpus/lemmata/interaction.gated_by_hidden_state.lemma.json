@@ -1,0 +1,120 @@
+{
+  "lemmaVersion": "0.1.0",
+  "id": "interaction.gated_by_hidden_state",
+  "intent": "allow an interaction only when hidden state satisfies a gate and always provide onFail feedback",
+  "contract": {
+    "contractVersion": "0.1.0",
+    "id": "interaction.gated_by_hidden_state.contract",
+    "kind": "function",
+    "source": {
+      "type": "lemma",
+      "provenance": "corpus/lemmata"
+    },
+    "inputs": [
+      "interaction_attempt",
+      "hidden_state"
+    ],
+    "preconditions": [
+      "subject_exists"
+    ],
+    "reads": [
+      "hidden_state.value",
+      "gate.threshold"
+    ],
+    "writes": [
+      "world.reaction",
+      "memory.attempts"
+    ],
+    "side_effects": [
+      "emit semantic_state_changed"
+    ],
+    "postconditions": [
+      "success_when_gate_passes",
+      "failed_attempt_teaches_player"
+    ],
+    "error_behavior": [
+      "missing_subject_is_reported"
+    ],
+    "must_not": [
+      "blocked_without_feedback"
+    ]
+  },
+  "idioms": {
+    "unity": {
+      "constructs": [
+        "condition check before action",
+        "feedback UI/audio on failed gate",
+        "attempt memory counter"
+      ],
+      "lifecycle": "bind during scene initialization and update through semantic state transitions",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "engine lifecycle details are not represented in lemma tests"
+      ],
+      "gains": [
+        "engine observability can expose debug state"
+      ],
+      "confidence": 0.55
+    },
+    "unreal": {
+      "constructs": [
+        "branch or gameplay tag query",
+        "feedback event on failed gate",
+        "attempt memory variable"
+      ],
+      "lifecycle": "bind in actor/component setup and execute through events or state changes",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "blueprint/native split is not resolved here"
+      ],
+      "gains": [
+        "editor-exposed properties can aid verification"
+      ],
+      "confidence": 0.55
+    },
+    "godot": {
+      "constructs": [
+        "condition branch before signal",
+        "hint signal on failed gate",
+        "memory resource counter"
+      ],
+      "lifecycle": "bind in scene tree readiness and react through signals or state changes",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "node ownership policy is target-specific"
+      ],
+      "gains": [
+        "signals make event traces explicit"
+      ],
+      "confidence": 0.55
+    }
+  },
+  "tests": [
+    {
+      "given": [
+        "hidden state below threshold",
+        "player attempts interaction"
+      ],
+      "when": [
+        "gate is evaluated"
+      ],
+      "then": [
+        "primary action does not happen",
+        "failed_attempt_teaches_player"
+      ]
+    },
+    {
+      "given": [
+        "hidden state meets threshold",
+        "player attempts interaction"
+      ],
+      "when": [
+        "gate is evaluated"
+      ],
+      "then": [
+        "success_when_gate_passes",
+        "failure hint is not emitted"
+      ]
+    }
+  ]
+}

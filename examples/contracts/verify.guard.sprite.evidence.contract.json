@@ -1,0 +1,18 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "verify.guard.sprite",
+  "kind": "evidence",
+  "source": { "type": "plan-fixture", "provenance": "examples/plans/guard-unity-to-godot-sprite.plan.json" },
+  "checks": [
+    "idle_frame_count_matches_plan",
+    "walk_loop_has_no_missing_direction",
+    "collision_footprint_matches_role",
+    "silhouette_score_above_threshold"
+  ],
+  "artifacts": [
+    "source_preview.png",
+    "target_atlas.png",
+    "translation_report.md",
+    "test-results.json"
+  ]
+}

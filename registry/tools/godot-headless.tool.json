@@ -1,0 +1,55 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "godot-headless",
+  "kind": "tool",
+  "source": {
+    "type": "local-tool",
+    "provenance": "Fablesletzterwille.md WP-B1 fixture support",
+    "license": "unknown"
+  },
+  "repository": "local/godot-headless",
+  "license": "unknown",
+  "last_verified": "2026-07-12",
+  "source_versions": [
+    "unknown"
+  ],
+  "target_versions": [
+    "unknown"
+  ],
+  "execution_mode": "cli",
+  "headless": true,
+  "accepts": [
+    "png.atlas",
+    "json",
+    "godot.tscn"
+  ],
+  "produces": [
+    "godot.resource",
+    "godot.tscn"
+  ],
+  "capabilities": [
+    "import_resource",
+    "headless_scene_validation"
+  ],
+  "unknown": [
+    "exact_local_installation",
+    "version_support",
+    "fixture_reproducibility"
+  ],
+  "known_losses": [
+    "unverified local manifest; losses unknown until fixture evidence exists"
+  ],
+  "manual_steps": [
+    "pin local executable",
+    "record version",
+    "attach evidence dossier"
+  ],
+  "fixture": null,
+  "evidence": null,
+  "confidence": 0.2,
+  "status": "candidate",
+  "execution": {
+    "mode": "cli",
+    "headless": true
+  }
+}

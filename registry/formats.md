@@ -1,0 +1,55 @@
+# TRIVIUM Format Tokens v0.1
+
+Format tokens are observations about external tools, not WIR meaning axes. The
+v0.1 registry warns on unknown tokens but does not reject them.
+
+- `unity.prefab`
+- `unity.project`
+- `unity.assets`
+- `unity.assetbundle`
+- `unity.terrain`
+- `unity.shader`
+- `unity.ui`
+- `unity.animation`
+- `unity.csharp`
+- `unreal.uasset`
+- `unreal.project`
+- `unreal.blueprint`
+- `unreal.material`
+- `unreal.landscape`
+- `unreal.umg`
+- `godot.tscn`
+- `godot.project`
+- `godot.animation`
+- `godot.theme`
+- `godot.shader`
+- `gamemaker.project`
+- `renpy.project`
+- `scratch.project`
+- `html.css`
+- `react.component`
+- `psd.layers`
+- `pencil.design`
+- `image`
+- `audio.speech`
+- `audio.tts`
+- `json`
+- `yaml`
+- `csv`
+- `gltf`
+- `glb`
+- `fbx`
+- `mesh`
+- `texture`
+- `skeleton`
+- `animation`
+- `png.frames`
+- `png.atlas`
+- `voxel`
+- `pointcloud`
+- `sdf`
+- `terrain.heightmap`
+- `geodata`
+- `unity.package`
+- `work.dir`
+- `godot.resource`

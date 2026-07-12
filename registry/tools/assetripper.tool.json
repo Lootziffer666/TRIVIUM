@@ -1,0 +1,57 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "assetripper",
+  "kind": "tool",
+  "source": {
+    "type": "local-tool",
+    "provenance": "Fablesletzterwille.md WP-B1 fixture support",
+    "license": "unknown"
+  },
+  "repository": "local/assetripper",
+  "license": "unknown",
+  "last_verified": "2026-07-12",
+  "source_versions": [
+    "unknown"
+  ],
+  "target_versions": [
+    "unknown"
+  ],
+  "execution_mode": "cli-or-app",
+  "headless": "partial",
+  "accepts": [
+    "unity.package",
+    "unity.assets",
+    "unity.assetbundle"
+  ],
+  "produces": [
+    "unity.project",
+    "mesh",
+    "texture",
+    "animation"
+  ],
+  "capabilities": [
+    "extract_unity_assets",
+    "reconstruct_dependencies"
+  ],
+  "unknown": [
+    "exact_local_installation",
+    "version_support",
+    "fixture_reproducibility"
+  ],
+  "known_losses": [
+    "unverified local manifest; losses unknown until fixture evidence exists"
+  ],
+  "manual_steps": [
+    "pin local executable",
+    "record version",
+    "attach evidence dossier"
+  ],
+  "fixture": null,
+  "evidence": null,
+  "confidence": 0.2,
+  "status": "candidate",
+  "execution": {
+    "mode": "cli-or-app",
+    "headless": "partial"
+  }
+}
