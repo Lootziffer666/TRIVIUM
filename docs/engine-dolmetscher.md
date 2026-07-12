@@ -1,130 +1,368 @@
-# Engine-Dolmetscher — Assets, Shader und Engine-Sprech-Corpus
+# Engine-Dolmetscher — semantische Realisierung über vorhandene Werkzeuge
 
-**Status:** Entwurfsauftrag für TRIVIUM nach WIR v1.0.0. Dieses Dokument
-beschreibt die Erweiterung vom Welt-Compiler zum Dolmetscher zwischen Engine-
-Sprachen. Es ersetzt nicht die Invariante „Bedeutung, nie Syntax", sondern
-wendet sie auf Assets, Shader und Engine-Idiome an.
+**Status:** Kanonischer Entwurfsauftrag nach WIR v1.0.0 und TRIVIUM-Kanon v1.1.
+
+Dieses Dokument beschreibt die Erweiterung vom Welt-Compiler zum Dolmetscher
+zwischen Engine-, Asset-, Code- und Wahrnehmungssprachen. TRIVIUM implementiert
+nicht jeden Konverter selbst. Es plant, verkettet und überprüft vorhandene
+Werkzeuge anhand neutraler Verträge.
 
 ## 1. Zielbild
 
-TRIVIUM soll eine Szene, ein Asset, einen Shader oder ein Gameplay-Idiom nicht
-als Dateiformat behandeln, sondern als Aussage in einer Engine-Sprache:
+TRIVIUM soll eine Idee, Szene, ein Asset, einen Shader oder ein Gameplay-Idiom
+nicht als Dateiendung behandeln, sondern als Quelle mit Verpflichtungen.
 
-- Unity-Assets sollen in Unreal funktionieren und Unreal-Assets in Unity, ohne
-  dass TRIVIUM behauptet, ein verlustfreier Binärkonverter zu sein.
-- Shader sollen aus Bedeutung rekonstruiert und in HLSL, Shader Graph, Unreal
-  Material Graph, Godot Shader Language, GLSL oder andere Zielsprachen
-  übersetzt werden können.
-- Ein Engine-Sprech-Corpus soll dokumentieren, welche Konzepte Engines nativ
-  sprechen, welche sie nur umschreiben, welche sie zerlegen müssen und welche
-  menschliche Autorenschaft brauchen.
+Beispiele:
 
-Der Dolmetscher arbeitet deshalb nicht mit `UnityPrefab -> UnrealBlueprint`,
-sondern mit `Quelle -> AIR/SIR/EIR -> Ziel`, wobei jede Stufe ihre Verluste,
-Annahmen und Gewinne dokumentiert.
+- Ein Unity-Prefab soll in Unreal, Godot oder als Sprite funktionieren.
+- Eine Unreal-Szene darf als Unity-Kapitel bestehen bleiben, wenn eine
+  Transkription unverhältnismäßig oder schlechter wäre.
+- Ein 3D-Charakter darf zu 2D, Pixel Art, Voxel oder Audiohinweis werden, wenn
+  seine benötigte Rolle erhalten bleibt.
+- Ein Shader soll möglichst aus seiner visuellen und funktionalen Bedeutung
+  rekonstruiert werden, nicht durch blinde Textsubstitution.
+- Dekompilierter Code soll nach Beziehungen und Funktionen gruppiert werden,
+  bevor ein LLM neuen Zielcode erzeugt.
 
-## 2. Drei neue Zwischenrepräsentationen
+Der zentrale Pfad lautet:
 
-TRIVIUM behält die WIR für Weltbedeutung. Für Engine-Dolmetschen kommen drei
-semantische IRs hinzu:
+```text
+Quelle
+→ Inspect
+→ semantische IRs und Contracts
+→ Capability Graph
+→ Toolchain Plan
+→ Ausführung durch ANVIL/MYTHIC
+→ Verifikation durch CUE
+→ Zielartefakt + Ledger
+```
+
+## 2. Zwischenrepräsentationen
+
+TRIVIUM behält WIR für Weltbedeutung. Für Realisierung und Rückgewinnung kommen
+spezialisierte IRs hinzu.
 
 | IR | Aufgabe | Beispiele |
 |---|---|---|
-| **AIR — Asset Intermediate Representation** | Beschreibt Assets als Rollen, Bindungen, Maße, Materialien, Importabsichten und LOD-/Collision-Semantik. | Mesh-Rolle, Skeleton, Rig-Konvention, Collider-Absicht, Texture-Slots, Units, Pivot, Socket, Prefab-Komposition |
-| **SIR — Shader Intermediate Representation** | Beschreibt visuelle Materialabsicht statt Shader-Syntax. | BRDF-Modell, Albedo/Normal/Roughness/Metallic, UV-Räume, Zeitfunktion, Masken, Transparenzmodus, Beleuchtungsannahmen |
-| **EIR — Engine Idiom Representation** | Beschreibt Engine-spezifische Denkfiguren als übersetzbare Idiome. | Unity Prefab, Unreal Blueprint Actor, Godot Node Tree, ScriptableObject, DataAsset, Component-System, Signal/Event-Pattern |
+| **WIR — World IR** | Weltstruktur, Wirkung und Kausalität | Entities, Beziehungen, Regeln, Gedächtnis, Momente |
+| **AIR — Asset IR** | Rolle und technische Bestandteile eines Assets | Mesh, Skeleton, Animation, Materialslots, Collider, Pivot, LOD, Lizenz |
+| **SIR — Shader IR** | Material- und Wahrnehmungsabsicht | PBR, UV-Räume, Vertexdeformation, Masken, Blend/Depth, Zeitfunktion |
+| **EIR — Engine Idiom IR** | Enginekonzepte ohne Bindung an ihre Syntax | Prefab/Actor/Node, Component, Signal/Event, DataAsset, Scene Tree |
+| **FIR — Function IR** | Codefunktion und Verhaltensvertrag | Inputs, State, Effects, Lifecycle, Invarianten, Fehlerpfade |
+| **PIR — Perception IR** | Wahrnehmungskanäle und Lesbarkeit | visuell, Audio, Sprache, Haptik, Timing, räumliche Orientierung |
+| **TIR — Toolchain IR** | ausführbarer Transformationsplan | Schritte, Inputs, Outputs, Versionen, Fallbacks, Evidence |
 
-Diese IRs sind keine Ersatzformate für FBX, glTF, `.mat`, `.uasset` oder
-Shader-Dateien. Sie sind Bedeutungsschichten, die solche Dateien referenzieren,
-annotieren und in andere Engine-Sprachen routen.
+Diese IRs ersetzen keine glTF-, FBX-, `.uasset`-, `.prefab`-, Shader- oder
+Quellcodedateien. Sie beschreiben, was diese Dateien bedeuten, welche Rolle sie
+im Ziel erfüllen sollen und welche Route belegbar ist.
 
-## 3. Corpus-Schema
+## 3. Tool Capability Registry
 
-Der Engine-Sprech-Corpus ist die Datenbasis des Dolmetschers. Jeder Eintrag ist
-ein belegter Übersetzungsfall, kein Bauchgefühl:
+Jedes vorhandene Werkzeug wird als Capability-Manifest registriert.
 
-```json
-{
-  "id": "unity.prefab.component.mesh_renderer.to.unreal.static_mesh_component",
-  "source": { "engine": "unity", "version": "2022.3", "concept": "Prefab/MeshRenderer" },
-  "target": { "engine": "unreal", "version": "5.4", "concept": "Actor/StaticMeshComponent" },
-  "ir": "EIR",
-  "route": "bridge",
-  "mapping": {
-    "sharedMeaning": ["renderable mesh component", "material slot binding"],
-    "sourceOnly": ["Unity layer/tag semantics"],
-    "targetOnly": ["Blueprint exposure", "mobility setting"]
-  },
-  "loss": [],
-  "gain": ["BlueprintCallable attachment surface"],
-  "evidence": ["fixture", "roundtrip-test", "human-review"],
-  "confidence": 0.82,
-  "notes": "Layer/tag must be routed separately as gameplay metadata."
-}
+```yaml
+id: assetripper
+source: github
+license: GPL-3.0
+execution:
+  mode: cli-or-app
+  headless: partial
+accepts:
+  - unity.assets
+  - unity.assetbundle
+produces:
+  - unity.project
+  - mesh
+  - texture
+  - animation
+capabilities:
+  - extract
+  - reconstruct_dependencies
+constraints:
+  - unity_version_sensitive
+  - rights_of_processed_assets_not_granted
+status: candidate
 ```
 
-Pflichtfelder: Quelle, Ziel, IR, Route, Mapping, Evidenz und Confidence. Jede
-`approximate`- oder `preserve`-Route braucht einen konkreten Verlust; jede
-`unknown`-Route erzeugt Review-Arbeit statt geratenen Output.
+Pflichtangaben:
 
-## 4. Shader-Dolmetschen
+- genaue Quelle und Version,
+- Lizenz des Werkzeugs,
+- Lizenz-/Provenienzanforderungen für Eingaben,
+- akzeptierte und erzeugte Formate,
+- semantische Fähigkeiten,
+- CLI-, Headless- oder Editorbindung,
+- Betriebssystem- und Engineversionen,
+- bekannte Verluste,
+- deterministische oder interaktive Ausführung,
+- Evidenzstatus und Confidence.
 
-Shader werden in TRIVIUM nicht primär von Sprache zu Sprache transpiliert.
-Stattdessen wird ein Shader in SIR zerlegt:
+TRIVIUM darf kostenlose, kommerzielle und lokale Werkzeuge führen. Ein
+zuverlässiges 45-Euro-Plugin kann für eine konkrete Route günstiger und besser
+sein als eine Woche Eigenentwicklung. Lizenz, Preis und Automatisierbarkeit
+sind Planungsparameter, keine ideologischen Ausschlusskriterien.
 
-1. **Oberflächenmodell:** unlit, Lambert, PBR metallic/roughness, clear coat,
-   subsurface, toon, volumetrisch.
-2. **Datenflüsse:** Texturen, Konstanten, Vertex-Daten, Instanzdaten,
-   Zeitachsen, Noise-Funktionen.
-3. **Räume:** object, world, view, tangent, screen, UV-Sets.
-4. **Render-State:** blending, depth, culling, transparency, shadow behavior.
-5. **Nicht-portable Idiome:** Engine-Makros, Custom Nodes, Pipeline-Hooks,
-   Lighting-Model-Erweiterungen.
+## 4. Transformation Graph
 
-Erst danach emittiert ein Zieladapter Material Graph Nodes, HLSL, GLSL, Godot
-Shader Code oder einen Report mit menschlichen To-dos. Ein Shader, der in URP
-einen Screen-Space-Pass nutzt, kann nach Unreal eventuell nur `approximate`
-werden; das ist ein dokumentierter Bedeutungsverlust, kein stiller Bug.
+Werkzeuge werden nicht als isolierte Favoritenliste geführt, sondern als Kanten
+in einem gerichteten Graphen.
+
+```text
+Unity Prefab
+→ Unity extractor
+→ neutral mesh/texture/skeleton
+→ Blender normalization
+→ glTF/FBX
+→ Unreal importer
+→ material reconstruction
+→ target fixture
+```
+
+Oder:
+
+```text
+Animated 3D character
+→ rig inspection
+→ animation selection
+→ headless Blender render
+→ trim/segment
+→ atlas pack
+→ engine sprite resource
+```
+
+Der Planner bewertet mögliche Pfade nach:
+
+- Vertragserfüllung,
+- Verlust und Confidence,
+- Installations- und Laufzeitkosten,
+- Lizenz,
+- vorhandenen Werkzeugen,
+- Headless-Fähigkeit,
+- GPU-/RAM-Bedarf,
+- Wartungszustand,
+- Anzahl menschlicher Eingriffe,
+- Beweisbarkeit.
 
 ## 5. Asset-Dolmetschen
 
-Assets werden als AIR plus Originalartefakte übersetzt:
+AIR beschreibt nicht nur das Original, sondern die im Ziel benötigte Rolle.
 
-- **Geometrie:** Einheiten, Achsen, Pivot, Bounds, Submeshes, LODs.
-- **Rigging:** Skeleton-Namen, Retargeting-Hinweise, Humanoid-/Generic-Rolle,
-  Sockets/Bones, Animation-Clips.
-- **Materialbindung:** Slots, Texturrollen, Shader-SIR-Verweis.
-- **Physik:** Collider-Intent, Trigger vs. Blocking, Mass/Drag/Constraints.
-- **Komposition:** Prefab/Blueprint/Node-Hierarchie als EIR, nicht als bloßer
-  Ordnerbaum.
-- **Metadaten:** Tags, Layers, Gameplay-Kategorien, Import-Settings,
-  Lizenz-/Provenienz-Hinweise.
+```yaml
+asset:
+  id: guard
+  role: humanoid_guard
+source:
+  engine: unity
+  type: prefab
+contains:
+  mesh: true
+  skeleton: humanoid
+  animations: [idle, walk, attack]
+  material_model: urp_pbr
+required_by_target:
+  - recognizable_silhouette
+  - idle
+  - walk
+  - collision
+optional:
+  - facial_rig
+  - cloth
+```
 
-Das Original reist weiterhin mit. Wenn ein `.uasset` nicht direkt gelesen
-werden kann, bleibt es als Quelle erhalten und wird durch AIR-Metadaten,
-Export-Artefakte und Review-Schritte ergänzt.
+Mögliche Routen:
 
-## 6. Roadmap
+- **direct:** vorhandenes neutrales Format direkt importieren.
+- **normalize:** Units, Achsen, Pivot, Channels oder Benennung korrigieren.
+- **reconstruct:** Prefab/Blueprint/Node-Komposition im Ziel neu erzeugen.
+- **bake:** Shader, VFX oder Animation in Texturen, Frames oder Geometrie
+  überführen.
+- **project:** 3D nach 2D, Bild nach Audio, Szene nach Text oder umgekehrt.
+- **federate:** Quelle bleibt in ihrer Runtime; nur der Weltvertrag wird
+  übergeben.
 
-1. **Corpus v0:** JSON-Schema, Fixtures und erste Unity↔Unreal↔Godot-Einträge
-   für Mesh, Material, Prefab/Actor, Collider, Animation Clip.
-2. **SIR v0:** PBR-Kernmodell, Texture-Slots, UV-/Space-Konventionen,
-   Render-State und Zieladapter für Unity Material, Unreal Material-Textplan
-   und Godot Shader.
-3. **AIR v0:** glTF/FBX-nahe Asset-Bedeutung mit Units, Pivot, LOD, Collider,
-   Materialbindung und Rig-Hinweisen.
-4. **EIR v0:** Engine-Idiome für Unity Prefab/MonoBehaviour, Unreal
-   Actor/Component/Blueprint und Godot Node/Scene.
-5. **Roundtrip-Harness:** Import -> IR -> Export -> Reimport -> Report, mit
-   Snapshot-Artefakten und menschlichem Review für `unknown`.
-6. **Authoring-UI:** Corpus-Einträge kuratieren, Konflikte anzeigen,
-   Confidence erhöhen oder senken und Übersetzungen als Lernfälle speichern.
+## 6. Shader- und Field-Dolmetschen
 
-## 7. Unverhandelbare Regeln
+Shader werden in SIR zerlegt:
 
-- Keine Behauptung von Verlustfreiheit ohne Ledger-Beweis.
-- Keine Übersetzung über Dateiendungen; immer über Bedeutung und Route.
-- Kein Erraten proprietärer Engine-Semantik; `unknown` ist erlaubt und sicher.
-- Shader-Syntax ist Zielausgabe, nicht Quelle der Wahrheit.
-- Corpus-Einträge brauchen Evidenz: Fixture, Test, Dokumentation oder
-  menschliche Review.
+1. Oberflächenmodell und Beleuchtungsannahmen.
+2. Datenflüsse und Texturrollen.
+3. Koordinatenräume.
+4. Render-State.
+5. Vertex-/Geometrieverformung.
+6. Zeit-, Noise- und Zustandsfunktionen.
+7. nicht portable Engine-Hooks.
+
+Bei reiner visueller Wirkung darf gebacken oder approximiert werden. Wenn die
+Verformung Weltfunktion trägt, muss der Vertrag auch Geometrie, Kollision,
+Navigation, Audio und andere Projektionen umfassen.
+
+```yaml
+intent: corridor.disintegrate_under_stress
+preserve:
+  - stress_causality
+  - reversibility
+  - traversal_changes_with_geometry
+project:
+  - mesh
+  - collision
+  - navigation
+  - audio
+  - particles
+forbidden:
+  - visual_only_when_collision_remains_static
+```
+
+Der allgemeine Ansatz ist daher **field-first**. Shader sind eine besonders
+leistungsfähige Ausgabe desselben Feldes, aber nicht automatisch die einzige
+Wahrheit.
+
+## 7. Code-Esperanto und FIR
+
+Code wird nicht zeilenweise zwischen C#, C++, GDScript oder Blueprint
+substituiert. Zuerst wird ein Funktionsvertrag rekonstruiert.
+
+```yaml
+function: door.deactivate
+inputs:
+  - door_state
+preconditions:
+  - door_exists
+effects:
+  - visual_presence_disabled
+  - collision_disabled
+  - processing_disabled
+  - navigation_updated
+postconditions:
+  - passage_traversable
+```
+
+Quell- und Zielidiome werden als Corpus-Einträge verknüpft. Die Zielsprache
+liefert anschließend korrekte Syntax und Lifecycle-Integration. CUE führt
+äquivalente Szenarien gegen Quelle und Ziel aus.
+
+## 8. Reverse Engineering
+
+Reverse Engineering dient der Bedeutungsbergung, nicht der kosmetischen
+Rückbenennung.
+
+Für dekompilierte APKs oder alte Spiele werden Fragmente gruppiert nach:
+
+- Call Graph,
+- Datenfluss,
+- gemeinsamem State,
+- UI-/Resource-IDs,
+- Lifecycle,
+- Events, Intents und Broadcasts,
+- Endpoints und Datenbanktabellen,
+- Threads/Coroutines,
+- Fehler- und Retrypfaden,
+- beobachtbarem Verhalten.
+
+Ergebnis ist kein behaupteter Originalquellcode, sondern ein Featuregraph mit
+Evidenzstufen:
+
+- `verified`,
+- `strongly_inferred`,
+- `ambiguous`,
+- `missing`.
+
+Ein LLM darf aus `verified` und `strongly_inferred` neue Module erzeugen. Es darf
+`ambiguous` nicht still als Wahrheit behandeln.
+
+## 9. Engine Federation
+
+Wenn Transkription nicht lohnt, kann eine Szene in ihrer ursprünglichen Engine
+bleiben. ANVIL verwaltet den neutralen Weltzustand und startet passende
+Kapitel-Runner.
+
+```text
+Unreal chapter
+→ Scene Contract
+→ Unity chapter
+→ Scene Contract
+→ Godot or audio-only chapter
+```
+
+Übertragbar sind insbesondere:
+
+- Inventar,
+- Beziehungen,
+- Entscheidungen,
+- Quest- und Weltzustände,
+- semantische Orte,
+- freigeschaltete Fähigkeiten,
+- Stress, Wissen und Gedächtnis.
+
+Nicht als Frühziel gelten:
+
+- gemeinsame framegenaue Physik,
+- laufende Partikelsimulation über Prozessgrenzen,
+- native Objektreferenzen,
+- deterministischer MMO-Netcode.
+
+Engine Hopping darf bewusst Spielmechanik und Erzählgrammatik sein. Ein Portal
+kann dieselbe Welt in einer anderen Engine- oder Wahrnehmungsgrammatik zeigen.
+
+## 10. Zuständigkeiten im Ökosystem
+
+| System | Verantwortung |
+|---|---|
+| **WIZARD** | findet Quellen nach Rollen, Stil, Atmosphäre und Erfüllbarkeit |
+| **TRIVIUM** | beschreibt Bedeutung, plant Routen, führt Corpus und Ledger |
+| **SWIFT** | formt visuelle und geometrische Materialien um |
+| **SHADED** | projiziert Zustände, Materialität und Felder wahrnehmbar |
+| **ANVIL** | orchestriert Produktion und Enginekapitel |
+| **MYTHIC** | provisioniert Werkzeuge und führt Pipelines aus |
+| **CUE-AGENT** | prüft Ergebnisse und erzeugt Evidence |
+
+## 11. Roadmap
+
+### Phase A — Verträge und Register
+
+1. Realization-Contract-Schema.
+2. Tool-Manifest-Schema.
+3. Corpus-Schema für Engine-Lemmata.
+4. Lizenz- und Provenienzfelder.
+5. Candidate-Registry aus `docs/tool-candidate-catalog.md`.
+
+### Phase B — drei Beweisrouten
+
+1. Unity-3D-Asset → Unreal-3D-Asset.
+2. Unity-3D-Asset → 2D-Spritesheet → Godot/Unity/Unreal-Ressource.
+3. Unreal- oder Godot-Szene → neutrale Scene-/Assetbeschreibung → andere
+   Zielprojektion.
+
+Jede Route braucht:
+
+- Fixture,
+- deterministischen Plan,
+- Quell- und Zielartefakte,
+- Ledger,
+- Screenshot-/Verhaltensbeweis,
+- dokumentierten manuellen Restaufwand.
+
+### Phase C — Code-Esperanto
+
+1. 25–50 kleine Gameplay-Lemmata.
+2. Unity-, Unreal- und Godot-Realisierungen.
+3. aus Contracts generierte Tests.
+4. Rückanalyse eines kleinen Beispiels in FIR.
+
+### Phase D — Engine Federation
+
+1. gemeinsames World-State-Schema.
+2. Scene Contracts.
+3. zwei minimale Kapitel in unterschiedlichen Runtimes.
+4. Übergabe über Datei oder lokalen IPC-Kanal.
+5. sichtbarer Engine-Hop als Demonstrator.
+
+## 12. Unverhandelbare Regeln
+
+- Kein Nachbau vorhandener Konverter ohne belegte Lücke.
+- Keine Behauptung von Verlustfreiheit ohne Test und Ledger.
+- Keine Übersetzung allein über Dateiendungen.
+- Keine proprietäre Semantik erraten.
+- Kein Tool ohne Lizenz-, Versions- und Provenienzdaten in Production.
+- Kein Erfolg nur weil das Ziel kompiliert.
+- Keine Enginewahl vor Rollen- und Wirkungsanalyse.
+- Kleine Spiele und klar begrenzte Assets zuerst.

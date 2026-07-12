@@ -1,100 +1,313 @@
-# TRIVIUM-Kanon — v1.0
+# TRIVIUM-Kanon — v1.1
 
-**Status:** Gründungsdokument. Wo spätere Dokumente widersprechen, wird der
-Widerspruch dokumentiert, nie still gemerged (Manifold-Disziplin).
+**Status:** Kanonisches Richtungsdokument. Wo spätere Dokumente widersprechen,
+wird der Widerspruch dokumentiert, nie still gemerged. Der Quellstand bleibt
+beweisbar; neue Einsichten ersetzen ihn nicht unsichtbar.
 
 ---
 
 ## 0. Was TRIVIUM ist
 
-TRIVIUM ist ein **universeller Game Translation Compiler**. Er überträgt die
-drei Grundpfeiler des klassischen Triviums auf Spielwelten:
+TRIVIUM ist ein **semantischer Game-Translation- und Realization-Compiler**.
+Es überträgt die drei Grundpfeiler des klassischen Triviums auf Spielwelten:
 
 | Pfeiler | Klassisch | In TRIVIUM |
 |---|---|---|
-| **Grammatik** | Struktur der Sprache | Struktur der Welt: Entities, Relationen, Räume — was existiert und wie es gebunden ist |
-| **Rhetorik** | Wirkung der Rede | Ausdruck der Welt: Intents (0..1-Bedeutungsachsen), Momente, Bogen — wie die Welt den Spieler anspricht |
-| **Logik** | Gültigkeit des Schließens | Regeln der Welt: State, Trigger, Maschinen, Gedächtnis — warum die Welt reagiert und kohärent bleibt |
+| **Grammatik** | Struktur der Sprache | Struktur der Welt: Entities, Relationen, Räume, Rollen und Fähigkeiten |
+| **Rhetorik** | Wirkung der Rede | Ausdruck der Welt: Wahrnehmung, Atmosphäre, Spannung, Lesbarkeit und Spielerwirkung |
+| **Logik** | Gültigkeit des Schließens | Regeln der Welt: State, Trigger, Gedächtnis, Invarianten und Konsequenzen |
 
-Eine Welt wird EINMAL als Bedeutung formuliert (WIR — World Intermediate
-Representation) und in beliebige Engines übersetzt. Godot, Unity, Unreal,
-LÖVE, Ren'Py, SHADED — 2D, 2.5D, 3D: Zielsprachen, keine Zugehörigkeiten.
-Es gibt keinen Architektur-Rassismus; es gibt nur Sprachen mit
-unterschiedlichen Registern.
+Eine Welt wird einmal als Bedeutung formuliert und anschließend in geeignete
+technische Formen transkribiert. Unity, Unreal, Godot, LÖVE, Ren'Py, SHADED,
+Browser, Audio-only, 2D, 2.5D und 3D sind Zielsprachen und Projektionen — keine
+Zugehörigkeiten.
+
+TRIVIUM verfolgt dabei vier miteinander verbundene Aufgaben:
+
+1. **Weltbedeutung bewahren:** Was existiert, was gilt und was eine Handlung
+   bewirkt.
+2. **Realisierung planen:** Welche technische Form die benötigte Wirkung mit
+   dem geringsten unvertretbaren Verlust erzeugt.
+3. **Vorhandene Werkzeuge orchestrieren:** Konverter, Importer, DCC-Werkzeuge,
+   Engine-Editoren und Skripte werden verkettet, statt neu erfunden.
+4. **Äquivalenz beweisen:** Das Ziel muss die relevanten Verpflichtungen der
+   Quelle erfüllen; Kompilierbarkeit allein genügt nicht.
 
 ## 1. Der Kernsatz
 
-> **Engines sind natürliche Sprachen. Übersetze niemals Syntax.
-> Übersetze Bedeutung.**
+> **Engines sind natürliche Sprachen und Brennöfen. Übersetze niemals bloß
+> Syntax oder Dateiendungen. Berge Bedeutung, forme neu und beweise Funktion.**
 
 Präzise Form:
 
-> TRIVIUM bildet Weltbedeutung auf **kommunikative Koordinaten** ab — was
-> existiert, wie es wirkt, warum es reagiert — **bevor** irgendeine
-> Entscheidung fällt, wie ein Ziel-Engine es ausspricht. Emission ist eine
-> nachgelagerte, geroutete Handlung. Sie ist nie der Einstiegspunkt.
+> TRIVIUM bildet Weltbedeutung, Assetrollen, Funktionsverträge und
+> Wahrnehmungsabsichten auf neutrale Koordinaten ab, bevor irgendeine
+> Entscheidung fällt, wie eine Zielengine sie ausspricht. Emission,
+> Konvertierung und Enginewahl sind nachgelagerte, geroutete Handlungen.
 
-Das ist Manifolds Kernsatz („The relationship is the key. Grammar is
-secondary." — FLOW-SPIN-SMASH, `research/MANIFOLD_CANON_v0.7.md` §1),
-übertragen vom Sprach- auf das Weltendesign: *Die Beziehung ist der
-Schlüssel. Die Engine ist sekundär.*
+Das ist Manifolds Kernsatz — *The relationship is the key. Grammar is
+secondary.* — auf Spielwelten, Code und Assets übertragen:
 
-## 2. Abstammung (nichts hiervon ist erfunden)
+> **Die Beziehung ist der Schlüssel. Die Engine ist sekundär.**
 
-1. **Manifold** (`lootziffer666/FLOW-SPIN-SMASH`, research/MANIFOLD_*):
-   - *Erst klassifizieren, dann entscheiden ob interveniert werden darf* →
-     erst routen, dann entscheiden was emittiert werden darf.
-   - Stage 0–3 als Ordnung von **Verpflichtungen**: Schutz → Struktur →
-     Routing → Realisierung. Keine spätere Stufe hebt frühere Schutzrechte auf.
-   - Routing-Taxonomie → `ROUTES`: native / bridge / approximate / decompose /
-     preserve / **unknown = designte Enthaltung**. Passivität ist Sicherheit,
-     kein Versagen.
-   - Jede Änderung traceable: `ruleId` + nicht-leerer `reason`. Kein
-     verstecktes Rewrite. Das Original reist mit jeder Übersetzung mit
-     (`<id>.wir.json` liegt in jedem Output).
-2. **SHADED** (`lootziffer666/SHADED`): High-Level-Parameter statt
-   Effekt-Schalter (Invariante 6) → Intent-Achsen sind Bedeutungen, nie
-   Engine-Parameter. SHADED ist zugleich der erste fließend rhetorische
-   Zieladapter (`adapters/shaded/`).
-3. **adult_game** (`lootziffer666/adult_game`, docs/ssot/SYSTEMS_OVERVIEW.md):
-   die vier Labor-Schichten (Context/Timing, Hidden Relational State,
-   World-Reaction Trigger, Hint/Memory) → das Logik-Stratum der WIR und die
-   Kohärenz-Engine. Deren Kernhypothese wird messbar: *wiederholte
-   Fehlversuche müssen lernbaren Fortschritt erzeugen, keine Chore-Loops*
-   (`CHORE_LOOP_RISK`, `learnability`-Metrik).
+## 2. Quellen statt Kategorien
 
-## 3. Unverhandelbare Invarianten
+Für TRIVIUM sind die folgenden Dinge zunächst dieselbe Art Problem:
 
-1. **Die Kernbibliothek kennt keine Engine.** `packages/trivium-core` enthält
-   kein Engine-Vokabular — kein `dayNight`, kein `Node2D`, kein `label`.
-   Adapter sind Plugins (`adapters/*`), registriert über `createRegistry()`.
-   Der Kern importiert nie einen Adapter.
-2. **Bedeutung, nie Syntax.** Die WIR spricht Intent-Achsen
-   (`precipitation`, `coldness`, …), nie Parameter. Dass kalter Niederschlag
-   in SHADED zu `snowfall` und warmer zu `rain` wird, ist eine
-   ÜBERSETZUNGS-Entscheidung des Adapters — eine Bedeutung, zwei
-   Oberflächenformen, wie in jeder natürlichen Sprache.
-3. **Jede Übersetzung dokumentiert ihren Verlust.** Routen `approximate` und
-   `preserve` ERZWINGEN einen Verlusteintrag (Ledger wirft sonst). Ein
-   Adapter, der `approximate` deklariert ohne `loss`, wird von der Registry
-   abgewiesen. Eine Übersetzung ohne Ledger ist keine Übersetzung, sondern
-   ein Gerücht.
-4. **Jede Semantik bietet neue Möglichkeiten.** Adapter deklarieren `gains`:
-   was die Zielsprache sagen kann, wonach die Quelle nie gefragt hat
-   (SHADEDs Weltgesetze, Godots Physik, Ren'Pys Rollback). Ein leeres
-   Gain-Feld im Report ist als verdächtig markiert.
-5. **Die Quelle ist heilig.** Stage 0 friert die WIR ein (deep-freeze);
-   kein Adapter mutiert sie. Unbekannte Konzepte werden nicht geraten,
-   sondern routen `unknown` → `needs_human_review`.
-6. **Kohärenz vor Emission.** Eine Welt, die in der WIR inkonsistent ist,
-   ist in jeder Engine inkonsistent. Strict-Mode verweigert die
-   Realisierung; non-strict trägt die Fehler sichtbar im Report.
-   *Fix meaning, not output.*
+- eine Spielidee,
+- ein Unity-Prefab,
+- ein Unreal-Asset,
+- ein 3D-Modell,
+- ein Sprite,
+- ein Shader,
+- eine Szene,
+- ein dekompiliertes Programmfragment,
+- ein altes Spiel,
+- ein Dialog oder Roman,
+- eine Audioaufnahme,
+- ein vorhandenes GitHub-Werkzeug.
 
-## 4. Abgrenzung
+Sie sind **Quellen**. Jede Quelle ist Evidenz für etwas, das in einer neuen Form
+weiterleben soll.
 
-TRIVIUM ist **kein** Transpiler (übersetzt keine GDScript→C#-Syntax), kein
-Asset-Konverter, kein Engine-Wrapper und keine Runtime. TRIVIUM übersetzt
-Weltbedeutung in Engine-Scaffolds plus vollständige Rechenschaft. Die
-letzte Meile — echte Assets, echtes VFX-Tuning — bleibt Autorenarbeit und
-wird vom Report als solche benannt.
+Der Ablauf lautet daher:
+
+```text
+Quelle
+→ Verpflichtungen und Beziehungen bergen
+→ gewünschte Zielwirkung bestimmen
+→ passende Transformationsroute planen
+→ neue Verkörperung erzeugen
+→ Äquivalenz und Verluste prüfen
+```
+
+Das Original ist nicht seine Datei, Engine oder Syntax. Das Original ist das,
+was erhalten bleiben muss.
+
+## 3. Abstammung
+
+1. **MANIFOLD / FLOW-SPIN-SMASH**
+   - Schutz → Struktur → Routing → Realisierung.
+   - Beziehungen vor Oberflächentokens.
+   - `unknown` ist designte Enthaltung, kein Versagen.
+   - Jede Intervention braucht Trace, Regel und Begründung.
+2. **SHADED**
+   - High-Level-Absichten statt isolierter Effekt-Schalter.
+   - Wahrnehmbare Zustände sind Projektionen derselben Weltwahrheit.
+   - Shader-first ist ein wichtiger Zielkanal; field-first bleibt die
+     allgemeinere Architektur für Geometrie, Physik, Navigation, Audio und
+     Darstellung.
+3. **adult_game**
+   - Context/Timing, Hidden Relational State, World Reaction und Hint/Memory.
+   - Wiederholte Fehlversuche müssen lernbaren Fortschritt erzeugen.
+   - Nicht-Reaktion, Verzögerung und Grenzschutz sind aktive Weltreaktionen.
+4. **SWIFT**
+   - Form ist wandelbar. 3D, 2D, Sprite, Voxel, SDF, Tile, Atlas oder
+     vorgerenderte Projektion können verschiedene Verkörperungen derselben
+     Rolle sein.
+5. **ANVIL**
+   - Produktionscompiler und Orchestrator. ANVIL entwickelt keine Spiele für
+     Engines, sondern enginefreie Welten und lässt sie auf der letzten Meile
+     realisieren.
+6. **WIZARD**
+   - Sucht nicht nach enginepassenden Dateien, sondern nach Quellen, die
+     benötigte Rollen erfüllen oder erfüllbar gemacht werden können.
+7. **MYTHIC und CUE-AGENT**
+   - MYTHIC provisioniert und führt Toolchains aus.
+   - CUE-AGENT akzeptiert Completion nur mit Evidenz.
+
+## 4. Unverhandelbare Invarianten
+
+1. **Der Kern kennt keine Zielengine.** Enginevokabular lebt in Adaptern,
+   Corpus-Einträgen und Toolmanifesten.
+2. **Bedeutung vor Implementierung.** Kein `GameObject`, `AActor`, `Node3D`,
+   `Collider` oder Shadername ist kanonische Weltwahrheit.
+3. **Verpflichtung vor Kopie.** Eine neue Verkörperung muss nur das erhalten,
+   was ihre Rolle im neuen Spiel benötigt — aber dieses vollständig und
+   überprüfbar.
+4. **Keine stillen Verluste.** Jede Approximation, Zerlegung, Rekonstruktion,
+   Vereinfachung oder bewusste Auslassung landet im Ledger.
+5. **Keine erfundenen Sicherheiten.** Unbekannte Semantik wird als `unknown`
+   geroutet und erzeugt Review-Arbeit.
+6. **Das Original reist mit.** Quellartefakte, Provenienz, Lizenzhinweise,
+   Reports und Zwischenrepräsentationen bleiben referenzierbar.
+7. **Funktion ist der Maßstab für Code.** Codekonvertierung bedeutet
+   Übertragung eines Funktionsvertrags in eine andere technische Grammatik.
+8. **Wirkung ist der Maßstab für Projektion.** Grafik, Audio, Text, Haptik,
+   Geometrie und Shader sind austauschbare Ausdruckskanäle, sofern die
+   relevanten Weltverpflichtungen erhalten bleiben.
+9. **Werkzeuge werden bevorzugt verbunden statt neu gebaut.** Eigene
+   Entwicklung konzentriert sich auf IRs, Planung, Adapter, Evidenz,
+   Fehlerbehandlung und fehlende Fugen.
+10. **Die Engine darf kein kreativer Türsteher sein.** Ein geeignetes Asset
+    wird nicht verworfen, nur weil es aus einer anderen Engine stammt.
+11. **Kohärenz vor Emission.** Eine inkonsistente neutrale Welt wird nicht durch
+    hübschen Zielcode korrekt.
+12. **Scope bleibt klein und praktisch.** TRIVIUM optimiert zuerst kleine Spiele,
+    Szenen, Assets und klar begrenzte Erfahrungen — nicht AAA-Portierung,
+    MMO-Synchronisation oder riesige Open Worlds.
+
+## 5. Code-Esperanto
+
+TRIVIUMs Code-Esperanto ist kein neuer Programmiersprachenersatz. Es ist eine
+neutrale Schicht aus Absichten, Zuständen, Effekten, Invarianten und
+Verpflichtungen.
+
+```yaml
+intent: passage.make_traversable
+requires:
+  - visual_state_matches_accessibility
+  - collision_no_longer_blocks
+  - navigation_can_cross
+  - state_persists
+forbidden:
+  - visually_open_but_physically_blocked
+```
+
+Engineadapter ordnen dieses Lemma ihren eigenen Konstrukten zu:
+
+```text
+Unity  → GameObject/Collider/NavMesh/State
+Unreal → Actor/CollisionComponent/NavModifier/State
+Godot  → Node/CollisionShape/NavigationRegion/Resource
+```
+
+Die Syntax wird erst beim Neuaufbau ergänzt. Die Datenbank dient dabei nicht
+nur als Wörterbuch, sondern als belegter Corpus aus:
+
+- gemeinsamem Sinn,
+- Quell- und Zielidiomen,
+- Vorbedingungen,
+- Nebenwirkungen,
+- Lebenszyklus,
+- Verlusten und Gewinnen,
+- Tests und Confidence.
+
+## 6. Realization Contracts
+
+Jede Quelle wird nur soweit übertragen, wie es die neue Rolle verlangt.
+
+Beispiel: Ein komplexer Unity-Charakter enthält 48 Animationen, Cloth,
+Gesichtsrig, Shader Graph und LODs. Das Zielspiel benötigt nur:
+
+- erkennbare Silhouette,
+- Idle,
+- Laufen,
+- eine Aktion,
+- Kollision,
+- Blickrichtung.
+
+Dann ist eine reduzierte Unreal-Figur, ein Godot-GLB oder ein Acht-Richtungs-
+Spritesheet eine gültige Verkörperung, sofern der Vertrag erfüllt ist.
+
+Ein Realization Contract beschreibt:
+
+- **preserve:** Was unverändert bleiben muss.
+- **project:** Wie es wahrnehmbar wird.
+- **approximate:** Was vereinfacht werden darf.
+- **bake:** Was von dynamisch zu statisch werden darf.
+- **reconstruct:** Was im Ziel neu aufgebaut werden muss.
+- **degrade:** Welche Fähigkeit bewusst reduziert wird.
+- **enrich:** Welche neue Fähigkeit das Ziel hinzufügt.
+- **verify:** Wie Gleichwertigkeit gemessen wird.
+
+## 7. Engine Federation
+
+Ein Spiel muss nicht vollständig in einer Engine laufen. Es muss durchgehend in
+derdelben Welt laufen.
+
+TRIVIUM erlaubt daher zwei Strategien:
+
+1. **Transkription:** Quelle wird in die Zielengine neu verkörpert.
+2. **Föderation:** Eine Szene bleibt in ihrer geeigneten Engine und wird über
+   einen neutralen Scene Contract mit anderen Runtimes verbunden.
+
+```yaml
+scene: clockwork_mansion
+runtime: unity
+inputs:
+  - player.inventory
+  - player.health
+  - world.guard_trust
+outputs:
+  - world.mansion_state
+  - player.stress
+entry: front_gate
+exit: escape_tunnel
+```
+
+Übergänge sollen zunächst an semantischen Schnittpunkten erfolgen: Türen,
+Portale, Fahrstühle, Kapitelgrenzen, Träume, Erinnerungen, Schwarzblenden oder
+bewusste Engine-Hops. Gemeinsame framegenaue Physik über mehrere Engines ist
+kein Frühziel.
+
+## 8. Reverse Engineering als Bedeutungsbergung
+
+Dekompilierter Code ist kein Quellcode, sondern Evidenz.
+
+TRIVIUM rekonstruiert nicht primär Dateibäume, sondern:
+
+- Daten- und Kontrollfluss,
+- Zustandsbesitz,
+- Lifecycle,
+- Events und Callbacks,
+- Lese-/Schreibbeziehungen,
+- Nebenwirkungen,
+- Invarianten,
+- Featuregrenzen,
+- beobachtbares Verhalten.
+
+So können tausende obfuskierte Fragmente zu belegten Featuregruppen
+vorsortiert werden. Ein LLM erhält anschließend keinen Müllhaufen, sondern einen
+Funktionsvertrag und einen Beziehungsgraphen. Es erzeugt neuen, lesbaren Code
+nicht durch Raten, sondern weil die Teile nach Evidenz zusammengehören.
+
+Reverse Engineering und Portierung gelten nur für eigene, freie oder
+entsprechend lizenzierte Quellen. Rechte und Provenienz sind Bestandteil jedes
+Contracts.
+
+## 9. Field-first und verformbare Welten
+
+Shader sind eine außerordentlich starke Projektionsschicht, aber nicht allein
+die Weltwahrheit. Für echte verformbare Räume muss derselbe neutrale Zustand
+mehrere Projektionen antreiben:
+
+```text
+Stressfeld
+→ Geometrie
+→ Kollision
+→ Navigation
+→ Audio
+→ Licht/Shader
+→ Partikel
+```
+
+Ein Flur, der bei steigendem Stress zerfällt und bei Besinnung rekonstruiert
+wird, darf nicht nur visuell verbogen sein, wenn Traversierbarkeit und NPCs der
+Verformung folgen sollen. SDFs, Voxel, Dynamic Meshes, Geometry Scripts,
+Collision-Rebuilds und Navigation-Rebuilds sind mögliche Zielmittel; die
+kanonische Wahrheit bleibt das Feld und sein Vertrag.
+
+## 10. Abgrenzung
+
+TRIVIUM ist:
+
+- Welt- und Funktionscompiler,
+- Transformationsplaner,
+- Toolchain-Router,
+- Corpus und Beweisledger,
+- Engine-Dolmetscher,
+- optionaler Föderationsplaner für mehrere Runtimes.
+
+TRIVIUM ist nicht:
+
+- eine neue Rendering- oder Physikengine,
+- ein Anspruch auf verlustfreie Universalportierung,
+- ein Ersatz für Blender, AssetRipper, FFmpeg, Engine-Editoren oder bestehende
+  Konverter,
+- ein AAA-Rebuilder,
+- eine Lizenzumgehung.
+
+Die letzte Meile darf automatisch, halbautomatisch oder menschlich erfolgen.
+Entscheidend ist, dass sie aus demselben belegten Vertrag entsteht und ihr
+Ergebnis überprüft wird.

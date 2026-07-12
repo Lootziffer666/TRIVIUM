@@ -1,45 +1,147 @@
-# Verlust-Taxonomie — Routen und ihre Rechenschaft
+# Verlust-Taxonomie — Routing, Realisierung und Rechenschaft
 
-Abgeleitet aus Manifolds Routing→Action-Tabelle
-(FLOW-SPIN-SMASH `research/MANIFOLD_ROUTING_TAXONOMY_v0.7.md` §2).
-Quelle im Code: `packages/trivium-core/src/ledger.js` (`ROUTES`).
+**Status:** `native`, `bridge`, `approximate`, `decompose`, `preserve` und
+`unknown` sind im aktuellen Core implementiert. Die zusätzlichen
+Realisierungsrouten dieses Dokuments sind kanonische Entwicklungsziele und
+dürfen erst nach Code- und Testunterstützung als implementiert gemeldet werden.
 
-| Route | Bedeutung | Verlust-Pflicht | Analogie (Sprache) |
+Abgeleitet aus Manifolds Routing→Action-Tabelle und erweitert für Assets, Code,
+Wahrnehmungsprojektionen und Engine Federation.
+
+## 1. Implementierte Kernrouten
+
+| Route | Bedeutung | Verlust-Pflicht | Analogie |
 |---|---|---|---|
-| `native` | Ziel spricht das Konzept fließend | — | Wort existiert 1:1 |
-| `bridge` | äquivalentes Konstrukt, Mapping dokumentiert | — | Lehnübersetzung |
-| `approximate` | verlustbehaftete Realisierung | **`loss` erzwungen** | Umschreibung („Schadenfreude" auf Englisch) |
-| `decompose` | ein Konzept wird mehrere Zielkonstrukte | — | ein Wort → Nebensatz |
-| `preserve` | Ziel kann es nicht aussprechen; Bedeutung wird inert mitgeführt | **`loss` erzwungen** | Zitat in Originalsprache |
-| `unknown` | designte Enthaltung — Sicherheitszustand | → `needs_human_review` | Übersetzer schweigt statt zu raten |
+| `native` | Ziel spricht das Konzept direkt | — | Wort existiert 1:1 |
+| `bridge` | äquivalentes Zielkonstrukt | Mapping erforderlich | Lehnübersetzung |
+| `approximate` | bewusst verlustbehaftete Realisierung | **`loss` erzwungen** | Umschreibung |
+| `decompose` | ein Konzept wird mehrere Zielkonstrukte | Mapping erforderlich | Wort→Nebensatz |
+| `preserve` | Bedeutung bleibt inert erhalten | **`loss` erzwungen** | Originalzitat |
+| `unknown` | designte Enthaltung | Review erforderlich | schweigen statt raten |
 
-## Durchsetzung (nicht aspirational)
+## 2. Geplante Realisierungsrouten
 
-- `ledger.record()` wirft ohne `ruleId` + nicht-leeren `reason` —
-  *no hidden rewrite*.
-- `approximate`/`preserve` ohne `loss` → Wurf.
-- Registry weist Adapter ab, deren Manifest `approximate` ohne
-  deklarierten `loss` enthält — Verluste werden vorab deklariert, nicht in
-  Produktion entdeckt.
-- `unknown` erreicht nie einen Adapter: der Router hält solche Konzepte
-  zurück (Passivität als Sicherheit; vgl. Manifold `ROUTE_ACTION.UNKNOWN
-  === 'preserve'`).
-- Das Original (`<id>.wir.json`) liegt in JEDEM Übersetzungsoutput — die
-  Projektion ersetzt nie die Quelle.
+| Route | Bedeutung | Pflichtnachweis |
+|---|---|---|
+| `reconstruct` | Zielstruktur wird aus Vertrag neu aufgebaut | Zielvertrag + Vergleichstest |
+| `normalize` | Achsen, Units, Channels, Pivot oder Benennung werden vereinheitlicht | Vorher/Nachher-Metadaten |
+| `bake` | dynamische Funktion wird in feste Frames, Texturen, Geometrie oder Daten überführt | deklarierter Dynamikverlust |
+| `project` | Bedeutung wechselt Dimension oder Wahrnehmungskanal | Perception-/Asset-Contract |
+| `degrade` | Fähigkeit wird absichtlich reduziert | begründeter Verlust + Akzeptanz |
+| `enrich` | Ziel fügt eine neue Fähigkeit hinzu | Gain + Konfliktprüfung |
+| `federate` | Quelle bleibt in eigener Runtime; World State wird übergeben | Scene Contract + Handoff-Test |
 
-## Gewinn-Pflicht (TRIVIUMs Erweiterung)
+Diese Routen sind nicht bloß Synonyme. Sie beeinflussen Planner, Toolauswahl,
+Evidence und Recovery.
 
-Jede Übersetzung dokumentiert auch **Gains**: Affordanzen der Zielsprache,
-nach denen die Quelle nie gefragt hat. Beispiele aus den mitgelieferten
-Adaptern:
+## 3. Verlustklassen
 
-- **SHADED:** 31 Weltgesetze reagieren ungefragt auf jeden Parametersatz;
-  Pfützen spiegeln Warmlicht, Rost akkumuliert, Atemwolken erscheinen im Frost.
-- **Godot:** Entities werden lebendige, signalfähige Objekte; die übersetzte
-  Welt kann Systeme wachsen lassen, die TRIVIUM nie beschrieb.
-- **Ren'Py:** Rollback + Saves geben Wiederspielbarkeits-Instrumentierung
-  gratis; Interpretations-Progression (adult_game-Hypothese) ist dort testbar.
-- **LÖVE:** totale Transparenz — die ganze Welt ist eine lesbare Lua-Datei.
+### Semantischer Verlust
 
-Ein Report ohne Gains ist als verdächtig markiert: eine Übersetzung, die
-keine Türen öffnet, hat ihr Ziel nicht verstanden.
+Eine Regel, Rolle, Beziehung oder Spielerwirkung kann nicht vollständig
+erhalten werden.
+
+Beispiel: freie kontinuierliche Raumverformung wird zu drei diskreten
+Szenenzuständen.
+
+### Funktionaler Verlust
+
+Das Ziel sieht ähnlich aus, tut aber nicht dasselbe.
+
+Beispiel: eine Tür wird unsichtbar, blockiert aber weiterhin Kollision und
+Navigation.
+
+### Dynamikverlust
+
+Laufzeitverhalten wird gebacken.
+
+Beispiel: ein prozeduraler 3D-Charakter wird zum Spriteatlas.
+
+### Präzisionsverlust
+
+Werte, Koordinaten, Kurven, Physik oder Timing werden angenähert.
+
+### Wahrnehmungsverlust
+
+Ein Ausdruckskanal entfällt.
+
+Beispiel: visuelle Mimik wird in Text und Atemgeräusch umgeschrieben.
+
+### Strukturverlust
+
+Quellhierarchie, Prefab-/Blueprint-Komposition oder Modulgrenzen können nicht
+beibehalten werden.
+
+### Provenienzverlust
+
+Herkunft, Lizenz, Autor oder Originalartefakt sind nicht mehr nachvollziehbar.
+Dieser Verlust ist nicht akzeptabel; die Route wird blockiert.
+
+### Reversibilitätsverlust
+
+Die Zielausgabe kann nicht zuverlässig auf die neutrale Bedeutung oder Quelle
+zurückgeführt werden.
+
+## 4. Gewinnklassen
+
+Eine Übersetzung dokumentiert nicht nur Verluste.
+
+- **Affordance Gain:** Ziel kann etwas ausdrücken, wonach die Quelle nie fragte.
+- **Accessibility Gain:** neue Wahrnehmungs- oder Eingabekanäle.
+- **Observability Gain:** besserer Trace, Debugging oder Evidence.
+- **Performance Gain:** günstigere Verkörperung bei gleichem Vertrag.
+- **Portability Gain:** neutrales oder offeneres Format.
+- **Composability Gain:** Asset oder Code wird modularer und wiederverwendbarer.
+
+Ein Gain darf keinen stillen Bedeutungswechsel legitimieren.
+
+## 5. Durchsetzung
+
+Aktuell implementiert:
+
+- `ledger.record()` verlangt `ruleId` und nicht-leeren `reason`.
+- `approximate` und `preserve` verlangen `loss`.
+- `unknown` erreicht keinen Adapter.
+- die WIR reist mit jedem Output.
+
+Für den Realization Planner zusätzlich erforderlich:
+
+- jeder Toolschritt schreibt Input-/Output-Hashes,
+- Version und Lizenz jedes Tools werden gespeichert,
+- jeder Route wird ein Contract zugeordnet,
+- `reconstruct`, `project`, `bake` und `federate` brauchen eigene Evidence,
+- Provenienzverlust blockiert Production,
+- ein kompiliertes Ziel ohne Vertragsprüfung gilt nicht als Erfolg.
+
+## 6. Beispiel
+
+```yaml
+source: unity.prefab.guard
+target: godot.sprite.guard
+route: project
+steps:
+  - extract
+  - normalize_rig
+  - render_eight_directions
+  - pack_atlas
+losses:
+  - type: dynamics
+    detail: cloth simulation baked into frames
+  - type: precision
+    detail: continuous rotation reduced to eight directions
+gains:
+  - type: performance
+    detail: no skeletal runtime required
+  - type: portability
+    detail: PNG atlas and JSON metadata
+verify:
+  - silhouette_preserved
+  - required_animations_present
+  - collision_role_preserved
+```
+
+## 7. Regel
+
+> Eine neue Form darf vom Original abweichen. Sie darf aber weder verschweigen,
+> worin sie abweicht, noch behaupten, dieselbe Funktion zu erfüllen, ohne es zu
+> beweisen.
