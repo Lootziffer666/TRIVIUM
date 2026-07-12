@@ -134,6 +134,7 @@ Fehlversuche müssen lernbaren Fortschritt erzeugen.* Eine gated Rule ohne
 - [`docs/trivium-canon.md`](docs/trivium-canon.md) — Gründungskanon, Invarianten, Abstammung
 - [`docs/wir-spec.md`](docs/wir-spec.md) — WIR-Format v1.0.0
 - [`docs/loss-taxonomy.md`](docs/loss-taxonomy.md) — Routen, Verlust-Pflicht, Gewinn-Pflicht
+- [`docs/engine-dolmetscher.md`](docs/engine-dolmetscher.md) — Roadmap für Assets, Shader und Engine-Sprech-Corpus
 
 ## Verwandte Repos
 
