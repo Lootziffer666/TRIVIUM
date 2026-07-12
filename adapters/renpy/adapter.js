@@ -74,8 +74,22 @@ const adapter = {
       L.push(`default trivium_${pyId(s.id)} = ${pyVal(s.initial)}  # ${s.visibility}, scope: ${s.scope}`);
     }
     L.push(`default trivium_memory = []`);
+    for (const m of world.logic.machines) {
+      L.push(`default trivium_machine_${pyId(m.id)} = ${JSON.stringify(m.initial)}`);
+    }
     L.push(``);
     L.push(`init python:`);
+    L.push(`    trivium_machines = ${py(Object.fromEntries(world.logic.machines.map((m) => [m.id, m.transitions])))}`);
+    L.push(``);
+    L.push(`    def trivium_advance(machine_id, event):`);
+    L.push(`        var = "trivium_machine_" + machine_id.replace("-", "_")`);
+    L.push(`        cur = getattr(store, var)`);
+    L.push(`        for t in trivium_machines.get(machine_id, []):`);
+    L.push(`            if t["from"] == cur and t["on"] == event:`);
+    L.push(`                setattr(store, var, t["to"])`);
+    L.push(`                break`);
+    L.push(`        return getattr(store, var)`);
+    L.push(``);
     L.push(`    trivium_rules = ${py(world.logic.rules.map((r) => ({
       id: r.id, trigger: r.when.trigger, conditions: r.when.conditions,
       then: r.then, on_fail: r.onFail, priority: r.priority, group: r.exclusiveGroup,

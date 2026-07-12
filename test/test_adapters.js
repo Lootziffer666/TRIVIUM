@@ -106,6 +106,39 @@ t("renpy: four adult_game layers are present, arc becomes label flow", () => {
   assert.ok(rpy.content.includes('define waechterin = Character("Die Wächterin")'));
 });
 
+t("declared machine capability is really emitted — the ledger must not lie", () => {
+  const { build: buildTurm } = require("../examples/turm-des-schweigens");
+  const shadedDrv = T.translate(buildTurm(), "shaded", reg).artifacts.find((a) => a.path.endsWith(".driver.js"));
+  assert.ok(shadedDrv.content.includes('"siegelzustand"') && shadedDrv.content.includes("function advance("));
+  new Function(shadedDrv.content);
+  const lua = T.translate(buildTurm(), "love2d", reg).artifacts.find((a) => a.path.endsWith("_world.lua"));
+  assert.ok(lua.content.includes("world.machines") && lua.content.includes("function world.advance("));
+  const rpy = T.translate(buildTurm(), "renpy", reg).artifacts.find((a) => a.path.endsWith(".rpy"));
+  assert.ok(rpy.content.includes('default trivium_machine_siegelzustand = "intakt"'));
+  assert.ok(rpy.content.includes("def trivium_advance(machine_id, event):"));
+  const gd = T.translate(buildTurm(), "godot", reg).artifacts.find((a) => a.path.endsWith("_world.gd"));
+  assert.ok(gd.content.includes("enum Siegelzustand"));
+});
+
+t("two worlds, opposite loss profiles — translation is happening", () => {
+  const { build: buildTurm } = require("../examples/turm-des-schweigens");
+  const dorfShaded = T.translate(build(), "shaded", reg);
+  const turmShaded = T.translate(buildTurm(), "shaded", reg);
+  const turmRenpy = T.translate(buildTurm(), "renpy", reg);
+  // SHADED loses the tower's 3D space and its intimacy…
+  assert.ok(turmShaded.ledger.losses.some((l) => l.conceptId === "grammar.space.turminneres"));
+  assert.ok(turmShaded.ledger.losses.some((l) => l.conceptId.includes("intimacy")));
+  // …the village never presented those losses to SHADED at 3D severity
+  assert.ok(!dorfShaded.ledger.losses.some((l) => l.conceptId === "grammar.space.dorfplatz"));
+  // Ren'Py loses ALL space but speaks the diary evidence natively
+  assert.ok(turmRenpy.ledger.losses.some((l) => l.conceptId === "grammar.space.turminneres" && l.route === "preserve"));
+  const evEvent = turmRenpy.ledger.events.find((e) => e.conceptId === "grammar.entity.tagebuch");
+  assert.strictEqual(evEvent.route, "native");
+  // and the same evidence is unspeakable for SHADED
+  const evShaded = turmShaded.ledger.events.find((e) => e.conceptId === "grammar.entity.tagebuch");
+  assert.strictEqual(evShaded.route, "preserve");
+});
+
 t("fidelity differs by target — engines are different languages", () => {
   const f = {};
   for (const target of ["shaded", "godot", "love2d", "renpy"]) {

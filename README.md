@@ -19,7 +19,7 @@ Registern.
 
 ```bash
 node tools/verify.js
-# → 32 Tests, dann die Beispielwelt in alle vier Zielsprachen:
+# → 34 Tests, dann beide Beispielwelten in alle vier Zielsprachen:
 #   tools/verify-out/{shaded,godot,love2d,renpy}/ mit Artefakten + TRANSLATION_REPORT.md
 ```
 
@@ -89,8 +89,8 @@ adapters/
   godot/                   → .tscn-Szene + GDScript-Weltskript
   love2d/                  → main.lua + Welt-Modul
   renpy/                   → .rpy mit adult_game-Vier-Schichten-Logik
-examples/dorf-sturmnacht.js  eine Welt, vier Sprachen
-test/                      32 Tests, pures Node
+examples/                  zwei Welten (Dorf 2.5D, Turm 3D), vier Sprachen
+test/                      34 Tests, pures Node
 tools/verify.js            alles in einem Lauf
 ```
 

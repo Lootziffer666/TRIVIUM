@@ -290,6 +290,15 @@ function buildDriver(world, steps, characters, anchors) {
   L.push(`  const MOMENT_LABELS = ${JSON.stringify(Object.fromEntries(world.rhetoric.moments.map((m) => [m.id, m.label])))};`);
   L.push(`  function momentLabel(id) { return MOMENT_LABELS[id] || id; }`);
   L.push(``);
+  L.push(`  // Logik: finite-state machines (advance by event, invalid events are inert)`);
+  L.push(`  const machines = ${JSON.stringify(Object.fromEntries(world.logic.machines.map((m) => [m.id, { state: m.initial, transitions: m.transitions }])), null, 2).replace(/\n/g, "\n  ")};`);
+  L.push(`  function advance(machineId, event) {`);
+  L.push(`    const m = machines[machineId]; if (!m) return null;`);
+  L.push(`    const t = m.transitions.find((t) => t.from === m.state && t.on === event);`);
+  L.push(`    if (t) m.state = t.to;`);
+  L.push(`    return m.state;`);
+  L.push(`  }`);
+  L.push(``);
   L.push(`  // Grammatik: characters as optical actors (sprites come from SWIFT)`);
   L.push(`  const ACTOR_SLOTS = ${JSON.stringify(characters.map((c) => ({
     id: c.id, name: c.name,
@@ -313,7 +322,7 @@ function buildDriver(world, steps, characters, anchors) {
   L.push(``);
   L.push(`  window.TRIVIUM_DRIVER = {`);
   L.push(`    worldId: ${JSON.stringify(world.meta.id)},`);
-  L.push(`    state, memory, actors, trigger, installArc, spawnActors,`);
+  L.push(`    state, memory, actors, machines, trigger, advance, installArc, spawnActors,`);
   L.push(`    play() { installArc(); S.story.play(); },`);
   L.push(`    stop() { S.story.stop(); },`);
   L.push(`    moment(id) { const p = MOMENTS[momentLabel(id)]; if (p) S.setParams(p); return p; },`);

@@ -62,6 +62,15 @@ const adapter = {
     L.push(`world.state = ${lua(Object.fromEntries(world.logic.state.map((s) => [s.id, s.initial])))}`);
     L.push(`world.rules = ${lua(world.logic.rules.map((r) => ({ id: r.id, trigger: r.when.trigger, conditions: r.when.conditions, effects: r.then, on_fail: r.onFail, priority: r.priority, group: r.exclusiveGroup })))}`);
     L.push(`world.memory = {}`);
+    L.push(`world.machines = ${lua(Object.fromEntries(world.logic.machines.map((m) => [m.id, { state: m.initial, transitions: m.transitions }])))}`);
+    L.push(``);
+    L.push(`function world.advance(machineId, event)`);
+    L.push(`  local m = world.machines[machineId]; if not m then return nil end`);
+    L.push(`  for _, t in ipairs(m.transitions) do`);
+    L.push(`    if t.from == m.state and t.on == event then m.state = t.to; break end`);
+    L.push(`  end`);
+    L.push(`  return m.state`);
+    L.push(`end`);
     L.push(``);
     L.push(`local function passes(c)`);
     L.push(`  if c.state then`);

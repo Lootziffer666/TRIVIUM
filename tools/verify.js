@@ -29,9 +29,11 @@ for (const f of fs.readdirSync(testDir).filter((f) => f.startsWith("test_")).sor
   }
 }
 
-// ── 2. translate the example to every adapter ────────────────────────────
+// ── 2. translate every example world to every adapter ────────────────────
 const T = require(path.join(ROOT, "packages/trivium-core"));
-const { build } = require(path.join(ROOT, "examples/dorf-sturmnacht"));
+const examplesDir = path.join(ROOT, "examples");
+const worlds = fs.readdirSync(examplesDir).filter((f) => f.endsWith(".js")).sort()
+  .map((f) => require(path.join(examplesDir, f)).build);
 
 const reg = T.createRegistry();
 for (const name of ["shaded", "godot", "love2d", "renpy"]) {
@@ -39,11 +41,13 @@ for (const name of ["shaded", "godot", "love2d", "renpy"]) {
 }
 
 fs.rmSync(OUT, { recursive: true, force: true });
-console.log("\n== translations ==");
+for (const build of worlds) {
+const worldId = build().meta.id;
+console.log(`\n== translations: ${worldId} ==`);
 for (const target of reg.list()) {
   try {
     const res = T.translate(build(), target, reg);
-    const dir = path.join(OUT, target);
+    const dir = path.join(OUT, worldId, target);
     fs.mkdirSync(dir, { recursive: true });
     for (const a of res.artifacts) {
       const p = path.join(dir, a.path);
@@ -67,7 +71,8 @@ for (const target of reg.list()) {
     console.error(`FAIL: ${target}: ${err.message}`);
   }
 }
+}
 
-console.log(`\nartifacts + reports: ${path.relative(process.cwd(), OUT)}/<target>/`);
+console.log(`\nartifacts + reports: ${path.relative(process.cwd(), OUT)}/<world>/<target>/`);
 console.log(failed ? "\nVERIFY: FAIL" : "\nVERIFY: PASS");
 process.exit(failed ? 1 : 0);
