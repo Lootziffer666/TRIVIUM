@@ -1,0 +1,12 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "clockwork_mansion",
+  "kind": "scene",
+  "source": { "type": "scene-design", "provenance": "documentation-example" },
+  "runtime": "unity",
+  "inputs": ["player.health", "player.inventory", "world.guard_trust"],
+  "outputs": ["player.stress", "world.mansion_state", "world.antagonist_status"],
+  "entry": { "semantic_anchor": "front_gate" },
+  "exit": { "semantic_anchor": "escape_tunnel" },
+  "handoff": { "format": "trivium-world-state-v1", "atomic": true }
+}

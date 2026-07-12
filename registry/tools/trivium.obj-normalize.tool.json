@@ -1,0 +1,49 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "trivium.obj-normalize",
+  "kind": "tool",
+  "source": {
+    "type": "trivium",
+    "provenance": "tools/recipes/obj-normalize.js",
+    "license": "project"
+  },
+  "repository": "local/tools/recipes/obj-normalize.js",
+  "license": "project",
+  "last_verified": "2026-07-12",
+  "source_versions": [
+    "obj"
+  ],
+  "target_versions": [
+    "glb.fixture"
+  ],
+  "execution_mode": "cli",
+  "headless": true,
+  "accepts": [
+    "obj"
+  ],
+  "produces": [
+    "glb",
+    "json"
+  ],
+  "capabilities": [
+    "normalize_obj_y_up",
+    "emit_glb_fixture",
+    "emit_normalization_report"
+  ],
+  "unknown": [],
+  "known_losses": [
+    "minimal GLB fixture does not prove full material or animation import"
+  ],
+  "manual_steps": [
+    "replace with Blender or engine importer for production assets"
+  ],
+  "fixture": "examples/plans/guard-obj-normalize.plan.json",
+  "evidence": null,
+  "confidence": 0.3,
+  "status": "candidate",
+  "execution": {
+    "mode": "cli",
+    "headless": true,
+    "command": "node"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "corridor.stress-collapse",
+  "kind": "world",
+  "source": { "type": "concept", "provenance": "author" },
+  "scope": { "target": "any" },
+  "preserve": ["stress_causes_instability", "transformation_is_reversible", "traversal_matches_geometry"],
+  "project": ["geometry", "collision", "navigation", "audio", "particles"],
+  "may_approximate": ["fragment_count", "exact_debris_trajectory"],
+  "must_not": ["visual_deformation_with_static_collision"],
+  "fallbacks": ["staged_mesh_swap", "precomputed_state_sequence"],
+  "verify": ["player_cannot_cross_when_contract_says_blocked", "npc_path_changes_with_corridor", "stress_zero_restores_passage"]
+}

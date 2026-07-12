@@ -88,7 +88,7 @@ Belegte Mappings zwischen:
 
 ### Planner
 
-Plant eine Route, ohne Werkzeugdetails in die Weltwahrheit zu mischen.
+Das Planner-Skelett v0.1 ist in `packages/trivium-planner` implementiert: Capability-Graph-Suche über Format-Tokens, transparente Additivkosten und ehrliche Review-Meldungen bei fehlenden Pfaden. Es plant eine Route, ohne Werkzeugdetails in die Weltwahrheit zu mischen.
 
 ```text
 requested outcome
@@ -101,10 +101,11 @@ requested outcome
 
 ### Executor
 
-Liegt primär bei ANVIL/MYTHIC. TRIVIUM emittiert einen Plan; der Executor führt
-ihn mit Logs, Hashes und Recovery aus.
+Ein dünner Dry-Run-/Hashing-Executor ist als `tools/execute-plan.js` implementiert. Er ersetzt ANVIL/MYTHIC nicht: TRIVIUM emittiert und prüft Pläne, der lokale Executor beweist nur Planbarkeit, Tool-Auffindbarkeit und Hash-Protokollierung.
 
-## 4. Planformat — Entwurf
+## 4. Planformat — implementiert als TIR v0.1
+
+TIR v0.1 ist als JSON-Planformat (`*.plan.json`) mit Validator in `packages/trivium-contracts` implementiert. YAML unten bleibt die historische Entwurfsskizze.
 
 ```yaml
 planVersion: 0.1

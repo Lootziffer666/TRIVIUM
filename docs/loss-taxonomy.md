@@ -1,9 +1,10 @@
 # Verlust-Taxonomie — Routing, Realisierung und Rechenschaft
 
-**Status:** `native`, `bridge`, `approximate`, `decompose`, `preserve` und
-`unknown` sind im aktuellen Core implementiert. Die zusätzlichen
-Realisierungsrouten dieses Dokuments sind kanonische Entwicklungsziele und
-dürfen erst nach Code- und Testunterstützung als implementiert gemeldet werden.
+**Status:** Alle dreizehn Routen (`native`, `bridge`, `approximate`,
+`decompose`, `reconstruct`, `normalize`, `bake`, `project`, `degrade`,
+`enrich`, `federate`, `preserve`, `unknown`) sind auf Ledger-Ebene
+implementiert. Planner-Nutzung, Contract-Auflösung und Evidence-Ausführung
+folgen in späteren Arbeitspaketen.
 
 Abgeleitet aus Manifolds Routing→Action-Tabelle und erweitert für Assets, Code,
 Wahrnehmungsprojektionen und Engine Federation.
@@ -19,7 +20,7 @@ Wahrnehmungsprojektionen und Engine Federation.
 | `preserve` | Bedeutung bleibt inert erhalten | **`loss` erzwungen** | Originalzitat |
 | `unknown` | designte Enthaltung | Review erforderlich | schweigen statt raten |
 
-## 2. Geplante Realisierungsrouten
+## 2. Implementierte Realisierungsrouten (Ledger-Ebene)
 
 | Route | Bedeutung | Pflichtnachweis |
 |---|---|---|
@@ -100,7 +101,10 @@ Ein Gain darf keinen stillen Bedeutungswechsel legitimieren.
 Aktuell implementiert:
 
 - `ledger.record()` verlangt `ruleId` und nicht-leeren `reason`.
-- `approximate` und `preserve` verlangen `loss`.
+- `approximate`, `bake`, `degrade` und `preserve` verlangen `loss`.
+- `enrich` verlangt `gain`.
+- `reconstruct`, `normalize`, `project` und `federate` verlangen `contractRef`; die Referenz bleibt auf Ledger-Ebene opak, die Auflösung ist Planner-/Evidence-Aufgabe.
+- `reconstruct`, `normalize`, `bake`, `project`, `degrade`, `enrich` und `federate` zählen als realisiert in der Fidelity-Formel; `preserve` und `unknown` bleiben die nicht realisierten Abzüge.
 - `unknown` erreicht keinen Adapter.
 - die WIR reist mit jedem Output.
 
@@ -108,7 +112,7 @@ Für den Realization Planner zusätzlich erforderlich:
 
 - jeder Toolschritt schreibt Input-/Output-Hashes,
 - Version und Lizenz jedes Tools werden gespeichert,
-- jeder Route wird ein Contract zugeordnet,
+- Contract-Referenzen werden gegen Contract-Dokumente aufgelöst,
 - `reconstruct`, `project`, `bake` und `federate` brauchen eigene Evidence,
 - Provenienzverlust blockiert Production,
 - ein kompiliertes Ziel ohne Vertragsprüfung gilt nicht als Erfolg.

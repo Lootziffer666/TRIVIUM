@@ -23,12 +23,20 @@ const ROUTES = Object.freeze({
   BRIDGE:      "bridge",      // equivalent construct exists; mapping documented
   APPROXIMATE: "approximate", // lossy realization; loss entry REQUIRED
   DECOMPOSE:   "decompose",   // one concept becomes several target constructs
+  RECONSTRUCT: "reconstruct", // rebuild target structure from a contract
+  NORMALIZE:   "normalize",   // unify axes, units, channels, pivots, or names
+  BAKE:        "bake",        // convert dynamic meaning to fixed output; loss REQUIRED
+  PROJECT:     "project",     // change dimension or perception channel via contract
+  DEGRADE:     "degrade",     // intentionally reduce capability; loss REQUIRED
+  ENRICH:      "enrich",      // add a target capability; gain REQUIRED
+  FEDERATE:    "federate",    // keep source in its runtime via scene/handoff contract
   PRESERVE:    "preserve",    // target cannot realize it; meaning carried as
                               // inert data so nothing is silently dropped
   UNKNOWN:     "unknown",     // designed abstention — a safety state, not an error
 });
 
-const LOSSY_ROUTES = new Set([ROUTES.APPROXIMATE, ROUTES.PRESERVE]);
+const LOSSY_ROUTES = new Set([ROUTES.APPROXIMATE, ROUTES.BAKE, ROUTES.DEGRADE, ROUTES.PRESERVE]);
+const CONTRACT_ROUTES = new Set([ROUTES.RECONSTRUCT, ROUTES.NORMALIZE, ROUTES.PROJECT, ROUTES.FEDERATE]);
 
 function createLedger(worldId, target) {
   return {
@@ -57,7 +65,16 @@ function record(ledger, ev) {
     ruleId: ev.ruleId,
     reason: ev.reason,
     via: ev.via || null, // the target construct used, if any
+    contractRef: ev.contractRef || null,
   };
+
+  if (CONTRACT_ROUTES.has(ev.route) && !ev.contractRef) {
+    throw new Error(`ledger.record(${ev.conceptId}): route '${ev.route}' requires a contractRef`);
+  }
+  if (ev.route === ROUTES.ENRICH && !ev.gain) {
+    throw new Error(`ledger.record(${ev.conceptId}): route '${ev.route}' requires a gain description`);
+  }
+
   ledger.events.push(entry);
 
   if (LOSSY_ROUTES.has(ev.route)) {
@@ -102,7 +119,7 @@ function formatReport(ledger, coherence) {
   lines.push(`# Translation Report — ${ledger.worldId} → ${ledger.target}`);
   lines.push("");
   lines.push(`- concepts routed: ${s.concepts}`);
-  lines.push(`- fidelity (native+bridge+approximate+decompose / all): ${s.fidelity}`);
+  lines.push(`- fidelity (realized routes except preserve/unknown / all): ${s.fidelity}`);
   lines.push(`- routes: ${Object.entries(s.byRoute).map(([k, v]) => `${k}=${v}`).join(", ")}`);
   lines.push(`- needs_human_review: ${s.needsHumanReview}`);
   lines.push("");
@@ -131,9 +148,9 @@ function formatReport(ledger, coherence) {
   lines.push("");
   lines.push(`## Full trace (${ledger.events.length} events)`);
   for (const ev of ledger.events) {
-    lines.push(`- ${ev.conceptId} → ${ev.route}${ev.via ? ` via ${ev.via}` : ""} (${ev.ruleId}: ${ev.reason})`);
+    lines.push(`- ${ev.conceptId} → ${ev.route}${ev.via ? ` via ${ev.via}` : ""}${ev.contractRef ? ` contract ${ev.contractRef}` : ""} (${ev.ruleId}: ${ev.reason})`);
   }
   return lines.join("\n") + "\n";
 }
 
-module.exports = { ROUTES, LOSSY_ROUTES, createLedger, record, recordGain, summarize, formatReport };
+module.exports = { ROUTES, LOSSY_ROUTES, CONTRACT_ROUTES, createLedger, record, recordGain, summarize, formatReport };

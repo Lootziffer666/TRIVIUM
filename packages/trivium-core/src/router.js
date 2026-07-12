@@ -74,9 +74,10 @@ function translate(world, adapterName, registry, options = {}) {
       via: cap.via || null,
       loss: cap.loss || null,
       gain: cap.gain || null,
+      contractRef: cap.contractRef || null,
     });
     if (cap.route !== ROUTES.UNKNOWN && cap.route !== ROUTES.PRESERVE) {
-      routed.push({ ...concept, route: cap.route, via: cap.via || null });
+      routed.push({ ...concept, route: cap.route, via: cap.via || null, contractRef: cap.contractRef || null });
     }
   }
 
