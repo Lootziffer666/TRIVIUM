@@ -1,6 +1,6 @@
 # Engine-Dolmetscher — semantische Realisierung über vorhandene Werkzeuge
 
-**Status:** Kanonischer Entwurfsauftrag nach WIR v1.0.0 und TRIVIUM-Kanon v1.1.
+**Status:** Kanonischer Entwurfsauftrag nach WIR v1.0.0 und TRIVIUM-Kanon v1.1. Die Tool Capability Registry v0.1 ist als JSON-Manifestbestand unter `registry/tools/` implementiert; Planner und Ausführung folgen.
 
 Dieses Dokument beschreibt die Erweiterung vom Welt-Compiler zum Dolmetscher
 zwischen Engine-, Asset-, Code- und Wahrnehmungssprachen. TRIVIUM implementiert

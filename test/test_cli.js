@@ -28,6 +28,13 @@ t("--list shows all built-in adapters", () => {
   for (const a of ["shaded", "godot", "love2d", "renpy", "unity", "unreal"]) assert.ok(out.includes(a), a);
 });
 
+
+t("tools --list filters candidate registry by accepted format", () => {
+  const { out } = run(["tools", "--list", "--accepts", "unity.project"]);
+  assert.ok(out.includes("anthogonyst-unitytogodot"));
+  assert.ok(!out.includes("ludidorici-scene2sprite"));
+});
+
 t("translates a .js world to one target", () => {
   const outDir = path.join(tmp, "run1");
   const { out } = run([EXAMPLE, "--target", "love2d", "--out", outDir]);

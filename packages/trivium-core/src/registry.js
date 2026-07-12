@@ -24,7 +24,7 @@
  */
 "use strict";
 
-const { ROUTES } = require("./ledger");
+const { ROUTES, LOSSY_ROUTES, CONTRACT_ROUTES } = require("./ledger");
 
 const REQUIRED_FIELDS = ["name", "engine", "dialect", "capabilities", "realize"];
 
@@ -44,8 +44,14 @@ function createRegistry() {
       if (!Object.values(ROUTES).includes(cap.route)) {
         throw new Error(`adapter ${adapter.name}: capability '${kind}' has unknown route '${cap.route}'`);
       }
-      if (cap.route === ROUTES.APPROXIMATE && !cap.loss) {
-        throw new Error(`adapter ${adapter.name}: capability '${kind}' routes approximate but declares no loss — losses are documented up front, not discovered in production`);
+      if (LOSSY_ROUTES.has(cap.route) && !cap.loss) {
+        throw new Error(`adapter ${adapter.name}: capability '${kind}' routes ${cap.route} but declares no loss — losses are documented up front, not discovered in production`);
+      }
+      if (cap.route === ROUTES.ENRICH && !cap.gain) {
+        throw new Error(`adapter ${adapter.name}: capability '${kind}' routes enrich but declares no gain — gains are documented up front, not discovered in production`);
+      }
+      if (CONTRACT_ROUTES.has(cap.route) && !cap.contractRef) {
+        throw new Error(`adapter ${adapter.name}: capability '${kind}' routes ${cap.route} but declares no contractRef — realization routes are contract-bound`);
       }
     }
     adapters.set(adapter.name, adapter);
