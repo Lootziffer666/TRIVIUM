@@ -1,0 +1,13 @@
+{
+  "name": "trivium",
+  "version": "1.0.0",
+  "description": "Universeller Game Translation Compiler — Grammatik, Rhetorik, Logik für Spielwelten. Engines sind Sprachen; übersetzt wird Bedeutung, nie Syntax.",
+  "private": true,
+  "main": "packages/trivium-core/index.js",
+  "scripts": {
+    "test": "node tools/verify.js",
+    "verify": "node tools/verify.js"
+  },
+  "engines": { "node": ">=18" },
+  "license": "UNLICENSED"
+}
