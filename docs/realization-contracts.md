@@ -209,7 +209,7 @@ Ein Tool Contract darf Lücken enthalten. Diese werden vom Planner entweder
 
 ## 9. Evidence Contract
 
-Jede Route braucht Beweise, die auf den eigentlichen Vertrag zielen.
+Evidence Contracts sind mit dem CUE-light Runner `tools/verify-evidence.js` ausführbar (`file_exists`, `file_hash`, `json_path`, `image_dimensions`, `report_route_count`, `manual`). Jede Route braucht Beweise, die auf den eigentlichen Vertrag zielen.
 
 ```yaml
 id: verify.guard.sprite

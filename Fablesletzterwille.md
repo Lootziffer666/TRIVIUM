@@ -460,7 +460,7 @@ Statuswerte: `offen` · `in_arbeit` · `fertig` · `verworfen(→§12)`.
 
 | F1 | Field-first-Korridor-Fixture (stress-collapse) | A1, A2 | offen |
 
-| G1 | Evidence-Runner (CUE-light) | A1 | offen |
+| G1 | Evidence-Runner (CUE-light) | A1 | fertig |
 
 | G2 | End-to-End-Kleinspiel aus Quellenrollen | C*, D2, G1 | offen |
 
