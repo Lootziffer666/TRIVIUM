@@ -99,6 +99,16 @@ const server = http.createServer((req, res2) => {
     ok(p1.dayNight === 1 && p1.rain === 1 && p1.storm === 1 && p1.wind === 1,
       "moment('sturmnacht') spricht die Engine: dayNight/rain/storm/wind = 1", JSON.stringify(p1));
 
+    // Sichtbeweis: die Sturmnacht, wie der übersetzte Driver sie spricht
+    const outDir = path.join(__dirname, "verify-out");
+    fs.mkdirSync(outDir, { recursive: true });
+    await page.waitForTimeout(800); // Regen/Blitz einschwingen lassen
+    const cv = await page.$("#gl"); // Overlay #ov liegt darüber und wird mitkomponiert
+    const box = await cv.boundingBox();
+    await page.screenshot({ path: path.join(outDir, "live_sturmnacht.png"), clip: box });
+    ok(fs.existsSync(path.join(outDir, "live_sturmnacht.png")),
+      "Screenshot der Driver-gesteuerten Sturmnacht: tools/verify-out/live_sturmnacht.png");
+
     // ── 5. Logik: Fehlversuch lehrt, Erfolg verändert die Welt ──────────
     const flow = await page.evaluate(() => {
       const D = window.TRIVIUM_DRIVER;
