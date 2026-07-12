@@ -25,7 +25,7 @@ const tmp = fs.mkdtempSync(path.join(os.tmpdir(), "trivium-cli-"));
 
 t("--list shows all built-in adapters", () => {
   const { out } = run(["--list"]);
-  for (const a of ["shaded", "godot", "love2d", "renpy", "unity"]) assert.ok(out.includes(a), a);
+  for (const a of ["shaded", "godot", "love2d", "renpy", "unity", "unreal"]) assert.ok(out.includes(a), a);
 });
 
 t("translates a .js world to one target", () => {

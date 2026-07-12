@@ -8,6 +8,7 @@ const godot = require("../adapters/godot/adapter");
 const love2d = require("../adapters/love2d/adapter");
 const renpy = require("../adapters/renpy/adapter");
 const unity = require("../adapters/unity/adapter");
+const unreal = require("../adapters/unreal/adapter");
 
 let n = 0;
 function t(name, fn) { fn(); n++; console.log("  ok " + name); }
@@ -18,9 +19,10 @@ reg.register(godot.adapter);
 reg.register(love2d.adapter);
 reg.register(renpy.adapter);
 reg.register(unity.adapter);
+reg.register(unreal.adapter);
 
-t("all four adapters translate dorf-sturmnacht without review flags", () => {
-  for (const target of ["shaded", "godot", "love2d", "renpy", "unity"]) {
+t("every adapter translates dorf-sturmnacht without review flags", () => {
+  for (const target of ["shaded", "godot", "love2d", "renpy", "unity", "unreal"]) {
     const res = T.translate(build(), target, reg);
     assert.strictEqual(res.summary.needsHumanReview, false,
       `${target}: unexpected UNKNOWN routes: ${JSON.stringify(res.ledger.review)}`);
@@ -128,6 +130,28 @@ t("unity: one C# file builds the world — entities, parenting, rules, machines"
   assert.ok(!cs.content.includes("undefined") && !cs.content.includes("NaN"), "no JS leakage into C#");
 });
 
+t("unreal: AActor-Paar mit Blueprint-Exposition — Regeln, Maschinen, Attachment", () => {
+  const res = T.translate(build(), "unreal", reg);
+  const h = res.artifacts.find((a) => a.path === "DorfSturmnachtWorld.h");
+  const cpp = res.artifacts.find((a) => a.path === "DorfSturmnachtWorld.cpp");
+  assert.ok(h && cpp, "header/source missing");
+  // Reflection + Blueprint-Vertrag
+  assert.ok(h.content.includes("UCLASS()") && h.content.includes("GENERATED_BODY()"));
+  assert.ok(h.content.includes('UFUNCTION(BlueprintCallable, Category = "Trivium") TArray<FName> Trigger(FName Name);'));
+  assert.ok(h.content.includes("UPROPERTY(BlueprintAssignable") && h.content.includes("FTriviumHint OnHint;"));
+  // Grammatik: Spawn + contains als Attachment
+  assert.ok(cpp.content.includes('SpawnEntity(TEXT("Die Wächterin"), "character"'));
+  assert.ok(cpp.content.includes('Spawned["haus_baecker"]->AttachToActor(Spawned["dorf"]'));
+  // Rhetorik + Logik: Achsen, Regeln inkl. onFail, Maschinen
+  assert.ok(cpp.content.includes('Moments.Add("sturmnacht", TMap<FName, float>{ { "timeOfDay", 1.f }'));
+  assert.ok(!/\b\d+f/.test(cpp.content.replace(/\d+\.\d*f|\.\d+f/g, "")), "kein C#-Float-Literal (1f) im C++");
+  assert.ok(cpp.content.includes("#if WITH_EDITOR"), "SetActorLabel ist editor-only geschützt");
+  assert.ok(cpp.content.includes('R.Id = "laterne_auffindbar"'));
+  assert.ok(cpp.content.includes("failure still teaches"));
+  assert.ok(cpp.content.includes('MachineState.Add("wetterlage", "ruhe");'));
+  assert.ok(!cpp.content.includes("undefined") && !cpp.content.includes("NaN"), "no JS leakage into C++");
+});
+
 t("declared machine capability is really emitted — the ledger must not lie", () => {
   const { build: buildTurm } = require("../examples/turm-des-schweigens");
   const shadedDrv = T.translate(buildTurm(), "shaded", reg).artifacts.find((a) => a.path.endsWith(".driver.js"));
@@ -163,7 +187,7 @@ t("two worlds, opposite loss profiles — translation is happening", () => {
 
 t("fidelity differs by target — engines are different languages", () => {
   const f = {};
-  for (const target of ["shaded", "godot", "love2d", "renpy", "unity"]) {
+  for (const target of ["shaded", "godot", "love2d", "renpy", "unity", "unreal"]) {
     f[target] = T.translate(build(), target, reg).summary.fidelity;
   }
   // godot (structure-fluent) must not lose more than love2d loses vs itself;

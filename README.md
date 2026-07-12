@@ -10,7 +10,7 @@ Grammatik · Rhetorik · Logik — die drei Grundpfeiler des Triviums,
 
 Eine Welt wird **einmal** als Bedeutung formuliert (WIR — World Intermediate
 Representation) und in beliebige Engines übersetzt: SHADED, Godot, LÖVE,
-Ren'Py — heute; Unity, Unreal, was auch immer — als weiteres Plugin. 2D,
+Ren'Py, Unity, Unreal — heute; was auch immer — als weiteres Plugin. 2D,
 2.5D, 3D. Windows, Linux, macOS. Die Kernbibliothek kennt keine Engine.
 Es gibt keinen Architektur-Rassismus, nur Sprachen mit verschiedenen
 Registern.
@@ -19,8 +19,8 @@ Registern.
 
 ```bash
 node tools/verify.js
-# → 46 Tests, dann beide Beispielwelten in alle vier Zielsprachen:
-#   tools/verify-out/{shaded,godot,love2d,renpy}/ mit Artefakten + TRANSLATION_REPORT.md
+# → 48 Tests, dann beide Beispielwelten in alle sechs Zielsprachen:
+#   tools/verify-out/<welt>/{shaded,godot,love2d,renpy,unity,unreal}/ mit Artefakten + TRANSLATION_REPORT.md
 ```
 
 Kein `npm install`. Null Dependencies. Pures Node.
@@ -112,8 +112,10 @@ adapters/
   godot/                   → .tscn-Szene + GDScript-Weltskript
   love2d/                  → main.lua + Welt-Modul
   renpy/                   → .rpy mit adult_game-Vier-Schichten-Logik
-examples/                  zwei Welten (Dorf 2.5D, Turm 3D), vier Sprachen
-test/                      46 Tests, pures Node
+  unity/                   → <Id>World.cs (MonoBehaviour baut die Welt zur Laufzeit)
+  unreal/                  → <Id>World.h/.cpp (AActor, alles BlueprintCallable)
+examples/                  zwei Welten (Dorf 2.5D, Turm 3D), sechs Sprachen
+test/                      48 Tests, pures Node
 tools/verify.js            alles in einem Lauf
 ```
 

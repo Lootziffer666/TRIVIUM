@@ -36,7 +36,7 @@ const worlds = fs.readdirSync(examplesDir).filter((f) => f.endsWith(".js")).sort
   .map((f) => require(path.join(examplesDir, f)).build);
 
 const reg = T.createRegistry();
-for (const name of ["shaded", "godot", "love2d", "renpy", "unity"]) {
+for (const name of ["shaded", "godot", "love2d", "renpy", "unity", "unreal"]) {
   reg.register(require(path.join(ROOT, "adapters", name, "adapter")).adapter);
 }
 
