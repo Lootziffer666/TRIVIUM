@@ -440,7 +440,7 @@ Statuswerte: `offen` · `in_arbeit` · `fertig` · `verworfen(→§12)`.
 
 | B2 | Planner-Skelett (Capability Graph, Ranking) | B1 | fertig |
 
-| B3 | Dry-Run-Executor + Plan-Hashing | B1 | offen |
+| B3 | Dry-Run-Executor + Plan-Hashing | B1 | fertig |
 
 | C1 | Beweisroute 1: 3D-Asset → Engine-Import (direct/normalize) | B2, B3 | offen |
 

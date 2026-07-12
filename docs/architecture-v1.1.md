@@ -101,8 +101,7 @@ requested outcome
 
 ### Executor
 
-Liegt primär bei ANVIL/MYTHIC. TRIVIUM emittiert einen Plan; der Executor führt
-ihn mit Logs, Hashes und Recovery aus.
+Ein dünner Dry-Run-/Hashing-Executor ist als `tools/execute-plan.js` implementiert. Er ersetzt ANVIL/MYTHIC nicht: TRIVIUM emittiert und prüft Pläne, der lokale Executor beweist nur Planbarkeit, Tool-Auffindbarkeit und Hash-Protokollierung.
 
 ## 4. Planformat — implementiert als TIR v0.1
 
