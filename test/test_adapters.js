@@ -7,6 +7,7 @@ const shaded = require("../adapters/shaded/adapter");
 const godot = require("../adapters/godot/adapter");
 const love2d = require("../adapters/love2d/adapter");
 const renpy = require("../adapters/renpy/adapter");
+const unity = require("../adapters/unity/adapter");
 
 let n = 0;
 function t(name, fn) { fn(); n++; console.log("  ok " + name); }
@@ -16,9 +17,10 @@ reg.register(shaded.adapter);
 reg.register(godot.adapter);
 reg.register(love2d.adapter);
 reg.register(renpy.adapter);
+reg.register(unity.adapter);
 
 t("all four adapters translate dorf-sturmnacht without review flags", () => {
-  for (const target of ["shaded", "godot", "love2d", "renpy"]) {
+  for (const target of ["shaded", "godot", "love2d", "renpy", "unity"]) {
     const res = T.translate(build(), target, reg);
     assert.strictEqual(res.summary.needsHumanReview, false,
       `${target}: unexpected UNKNOWN routes: ${JSON.stringify(res.ledger.review)}`);
@@ -106,6 +108,26 @@ t("renpy: four adult_game layers are present, arc becomes label flow", () => {
   assert.ok(rpy.content.includes('define waechterin = Character("Die Wächterin")'));
 });
 
+t("unity: one C# file builds the world — entities, parenting, rules, machines", () => {
+  const res = T.translate(build(), "unity", reg);
+  const cs = res.artifacts.find((a) => a.path === "DorfSturmnachtWorld.cs");
+  assert.ok(cs, "C# artifact missing");
+  // Grammatik: Entities werden GameObjects, contains wird Parenting
+  assert.ok(cs.content.includes('Spawn("Die Wächterin", "character"'));
+  assert.ok(cs.content.includes('byId["haus_baecker"].transform.SetParent(byId["dorf"].transform'));
+  // Rhetorik: Momente tragen Achsen, Arc spielt mit Lerp
+  assert.ok(cs.content.includes('["sturmnacht"] = new() { ["timeOfDay"] = 1f'));
+  assert.ok(cs.content.includes("public IEnumerator PlayArc()"));
+  // Logik: Regeln inkl. onFail, Maschinen, Events fürs Andocken
+  assert.ok(cs.content.includes('Id = "laterne_auffindbar"'));
+  assert.ok(cs.content.includes("failure still teaches"));
+  assert.ok(cs.content.includes('["wetterlage"] = "ruhe"'));
+  assert.ok(cs.content.includes("event Action<string, Dictionary<string, float>> OnMoment"));
+  // Booleans wurden 0/1 (dokumentierte Brücke), kein JS-Leak
+  assert.ok(cs.content.includes('["laterne_gefunden"] = 0f'));
+  assert.ok(!cs.content.includes("undefined") && !cs.content.includes("NaN"), "no JS leakage into C#");
+});
+
 t("declared machine capability is really emitted — the ledger must not lie", () => {
   const { build: buildTurm } = require("../examples/turm-des-schweigens");
   const shadedDrv = T.translate(buildTurm(), "shaded", reg).artifacts.find((a) => a.path.endsWith(".driver.js"));
@@ -141,7 +163,7 @@ t("two worlds, opposite loss profiles — translation is happening", () => {
 
 t("fidelity differs by target — engines are different languages", () => {
   const f = {};
-  for (const target of ["shaded", "godot", "love2d", "renpy"]) {
+  for (const target of ["shaded", "godot", "love2d", "renpy", "unity"]) {
     f[target] = T.translate(build(), target, reg).summary.fidelity;
   }
   // godot (structure-fluent) must not lose more than love2d loses vs itself;

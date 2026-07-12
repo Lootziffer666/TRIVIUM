@@ -26,7 +26,7 @@ const ROOT = path.join(__dirname, "..");
 const T = require(path.join(ROOT, "packages/trivium-core"));
 
 // Das CLI kennt Adapter — der Kern nicht. Neue Engines hier registrieren.
-const BUILTIN_ADAPTERS = ["shaded", "godot", "love2d", "renpy"];
+const BUILTIN_ADAPTERS = ["shaded", "godot", "love2d", "renpy", "unity"];
 
 function usage(code) {
   console.log("usage: trivium <welt.json|welt.js> [--target all|name,name] [--out dir] [--no-strict] [--list]");
