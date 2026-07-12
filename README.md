@@ -1,54 +1,49 @@
 # TRIVIUM
 
-**Ein universeller Game Translation Compiler.**
+**Ein universeller Game Translation & Realization Compiler.**
 Grammatik · Rhetorik · Logik — die drei Grundpfeiler des Triviums,
 übertragen auf Spielwelten.
 
-> Engines sind natürliche Sprachen. Übersetze niemals Syntax.
-> Übersetze Bedeutung. Jede Übersetzung dokumentiert ihren Verlust.
-> Jede Semantik bietet neue Möglichkeiten.
+> Engines sind natürliche Sprachen und Brennöfen.
+> Übersetze niemals bloß Syntax oder Dateiendungen.
+> Berge Bedeutung, forme neu und beweise Funktion.
 
 Eine Welt wird **einmal** als Bedeutung formuliert (WIR — World Intermediate
-Representation) und in beliebige Engines übersetzt: SHADED, Godot, LÖVE,
-Ren'Py, Unity, Unreal — heute; was auch immer — als weiteres Plugin. 2D,
-2.5D, 3D. Windows, Linux, macOS. Die Kernbibliothek kennt keine Engine.
-Es gibt keinen Architektur-Rassismus, nur Sprachen mit verschiedenen
-Registern.
+Representation) und anschließend in geeignete Zielsprachen und Projektionen
+überführt: SHADED, Godot, LÖVE, Ren'Py, Unity, Unreal — 2D, 2.5D, 3D, Audio,
+Text oder andere Formen.
+
+TRIVIUMs erweiterte Richtung behandelt außerdem Assets, Shader, Code,
+Legacy-Spiele und vorhandene Konverter als Quellen beziehungsweise Werkzeuge.
+TRIVIUM soll nicht jeden Konverter neu bauen. Es beschreibt Verpflichtungen,
+plant Toolchains, dokumentiert Verluste und lässt Ergebnisse durch Evidence
+prüfen.
 
 ## Schnellstart
 
 ```bash
 node tools/verify.js
 # → 48 Tests, dann beide Beispielwelten in alle sechs Zielsprachen:
-#   tools/verify-out/<welt>/{shaded,godot,love2d,renpy,unity,unreal}/ mit Artefakten + TRANSLATION_REPORT.md
+#   tools/verify-out/<welt>/{shaded,godot,love2d,renpy,unity,unreal}/
 ```
 
 Kein `npm install`. Null Dependencies. Pures Node.
 
-Oder direkt über das CLI — eine Welt als reine JSON-Datei, kein
-JavaScript nötig (dieselben Builder validieren beide Wege; das emittierte
-`<id>.wir.json` ist selbst wieder gültige Eingabe, Round-Trip bitidentisch):
+Oder direkt über das CLI:
 
 ```bash
-node bin/trivium.js --list                                   # Adapter zeigen
-node bin/trivium.js meine-welt.json --target shaded,godot    # übersetzen
-node bin/trivium.js examples/dorf-sturmnacht.js --out out/   # .js geht auch
-# Exit 2 = übersetzt, aber Konzepte in needs_human_review — Enthaltung ist
-# Sicherheit, kein Erfolg.
+node bin/trivium.js --list
+node bin/trivium.js meine-welt.json --target shaded,godot
+node bin/trivium.js examples/dorf-sturmnacht.js --out out/
+# Exit 2 = Konzepte in needs_human_review — Enthaltung ist Sicherheit.
 ```
 
-Und der Beweis, dass die Übersetzung nicht nur emittiert wird, sondern
-**lebt** — der generierte Driver, ausgeführt im echten `window.SHADED`
-(headless Chromium, Schwester-Repo `../SHADED`):
+Live-Verifikation gegen eine echte SHADED-Instanz:
 
 ```bash
 npm i --no-save playwright
 node tools/verify-live.js
-# → 16 Verhaltens-Assertions in der echten Engine: Storyboard installiert,
-#   Momente setzen Parameter, Fehlversuche lehren, der Laternen-Fund
-#   wechselt die Welt in 'Der Tag danach', die Wächterin betritt als
-#   Actor sichtbar die Szene. Screenshots: tools/verify-out/live_*.png
-#   VERIFY-LIVE: PASS
+# → Verhaltens-Assertions + Screenshots + Roundtrip
 ```
 
 ## Die Idee in 20 Zeilen
@@ -69,75 +64,94 @@ T.addRule(w, { id: "oeffnung",
 
 const reg = T.createRegistry();
 reg.register(require("./adapters/shaded/adapter").adapter);
-
 const { artifacts, report } = T.translate(w, "shaded", reg);
-// artifacts: abspielbares SHADED-Storyboard + Logik-Driver + Marker-Brief
-//            + die WIR selbst (das Original reist immer mit)
-// report:    was nativ gesprochen, was überbrückt, was verloren, was gewonnen
 ```
 
-Dieselbe Welt, unverändert, durch `godot`, `love2d` oder `renpy` übersetzt,
-ergibt eine Godot-Szene + GDScript-Weltskript, ein lauffähiges
-LÖVE-Scaffold oder einen Ren'Py-Flow mit verdeckter Beziehungslogik. Was
-eine Zielsprache nicht sagen kann, sagt stattdessen ihr Ledger.
+Dieselbe Welt wird unverändert durch Zieladapter übersetzt. Was eine
+Zielsprache nicht sagen kann, sagt ihr Ledger.
 
-Und es geht auch **rückwärts** (`adapters/shaded/importer.js`): ein
-SHADED-Storyboard — live aus `window.SHADED.story.board()` gezogen — wird
-zurück auf Bedeutung gehoben (`paramsToIntents`: dayNight → timeOfDay,
-temperature → 1−coldness, snowfall → precipitation bei Kälte) und dann in
-jede andere Sprache übersetzt. Engine → WIR → Engine, der volle Kreis;
-verify-live führt ihn bei jedem Lauf aus. Parameter ohne
-Bedeutungs-Gegenstück (`flash`, `bleach`, …) werden nicht geraten, sondern
-als Import-Verlust dokumentiert — Enthaltung gilt in beide Richtungen.
-
-## Warum „Trivium"?
+## Drei Ebenen
 
 | Pfeiler | In TRIVIUM | Stratum |
 |---|---|---|
-| **Grammatik** | Was existiert, wie es gebunden ist | `grammar`: Entities, Relationen, Räume |
-| **Rhetorik** | Wie die Welt den Spieler anspricht | `rhetoric`: Intent-Achsen (0..1), Momente, Bogen |
-| **Logik** | Warum die Welt reagiert und kohärent bleibt | `logic`: State, Regeln, Maschinen, Gedächtnis |
+| **Grammatik** | Was existiert und wie es gebunden ist | Entities, Relationen, Räume |
+| **Rhetorik** | Wie die Welt erfahrbar wird | Intents, Momente, Bogen, Wahrnehmung |
+| **Logik** | Warum die Welt reagiert | State, Regeln, Maschinen, Gedächtnis |
 
-## Architektur
+## Erweiterte Architektur
 
+```text
+Quelle
+Idea | Asset | Scene | Shader | Code | Legacy Game
+                         │
+                         ▼
+WIR / AIR / SIR / EIR / FIR / PIR
+                         │
+                         ▼
+Realization Contracts + Capability Graph
+                         │
+                         ▼
+Existing Tools + Engine Adapters + ANVIL/MYTHIC
+                         │
+                         ▼
+Unity | Unreal | Godot | 2D | 3D | Audio | Text
+                         │
+                         ▼
+CUE Evidence + Loss/Gain Ledger
 ```
-packages/trivium-core/     der Kern — kennt KEINE Engine
-  src/wir.js               WIR: drei Strata, geschlossener Intent-Kanon
-  src/router.js            Stage 0–3: Protect → Structure → Route → Realize
-  src/ledger.js            Routen + Verlust-/Gewinn-Rechenschaft (ruleId + reason)
-  src/coherence.js         Konsistenz, Kohärenz, Wiederspielbarkeits-Metriken
-  src/registry.js          Adapter = Plugins mit Capability-Manifesten
+
+Der aktuelle Code implementiert den WIR-Kern, sechs Zieladapter, Routing,
+Ledger und Kohärenz. Die Asset-, Toolchain-, Code-Esperanto-, Field-first- und
+Engine-Federation-Schichten sind in den Dokumenten als nächste kanonische
+Entwicklungsrichtung spezifiziert. Dokumentation unterscheidet ausdrücklich
+zwischen implementiert und geplant.
+
+## Architektur des aktuellen Codes
+
+```text
+packages/trivium-core/
+  src/wir.js               WIR: drei Strata
+  src/router.js            Protect → Structure → Route → Realize
+  src/ledger.js            Verlust-/Gewinn-Rechenschaft
+  src/coherence.js         Konsistenz und Lernbarkeit
+  src/registry.js          Adapter-Registry
 adapters/
-  shaded/                  → window.SHADED: Storyboard, Params, Actors, Marker-Brief
-  godot/                   → .tscn-Szene + GDScript-Weltskript
-  love2d/                  → main.lua + Welt-Modul
-  renpy/                   → .rpy mit adult_game-Vier-Schichten-Logik
-  unity/                   → <Id>World.cs (MonoBehaviour baut die Welt zur Laufzeit)
-  unreal/                  → <Id>World.h/.cpp (AActor, alles BlueprintCallable)
-examples/                  zwei Welten (Dorf 2.5D, Turm 3D), sechs Sprachen
-test/                      48 Tests, pures Node
-tools/verify.js            alles in einem Lauf
+  shaded/
+  godot/
+  love2d/
+  renpy/
+  unity/
+  unreal/
+examples/
+test/
+tools/verify.js
 ```
 
-Der Router ist Manifolds Stage-0–3-Denken (FLOW-SPIN-SMASH,
-`research/MANIFOLD_CANON_v0.7.md`), übertragen aufs Weltendesign: erst
-schützen, dann strukturieren, dann routen, dann erst sprechen. Unbekannte
-Konzepte werden nicht geraten — sie routen `unknown` und verlangen
-menschliche Prüfung. Passivität ist Sicherheit.
-
-Die Kohärenz-Engine trägt adult_games Labor-Hypothese in sich: *wiederholte
-Fehlversuche müssen lernbaren Fortschritt erzeugen.* Eine gated Rule ohne
-`onFail` ist ein dokumentiertes Chore-Loop-Risiko.
+Der Router überträgt Manifolds Stage-0–3-Denken auf Weltendesign. Unbekannte
+Konzepte werden nicht geraten. Die Kohärenz-Engine trägt adult_games
+Anti-Chore-Loop-Hypothese: wiederholte Fehlversuche müssen lernbaren Fortschritt
+erzeugen.
 
 ## Dokumente
 
-- [`docs/trivium-canon.md`](docs/trivium-canon.md) — Gründungskanon, Invarianten, Abstammung
-- [`docs/wir-spec.md`](docs/wir-spec.md) — WIR-Format v1.0.0
-- [`docs/loss-taxonomy.md`](docs/loss-taxonomy.md) — Routen, Verlust-Pflicht, Gewinn-Pflicht
-- [`docs/engine-dolmetscher.md`](docs/engine-dolmetscher.md) — Roadmap für Assets, Shader und Engine-Sprech-Corpus
+- [`docs/trivium-canon.md`](docs/trivium-canon.md) — Kanon v1.1, Scope und Invarianten
+- [`docs/architecture-v1.1.md`](docs/architecture-v1.1.md) — vollständige Realization-Pipeline
+- [`docs/wir-spec.md`](docs/wir-spec.md) — WIR v1.0.0 und Anbindung der neuen IRs
+- [`docs/realization-contracts.md`](docs/realization-contracts.md) — Asset-, Function-, Perception- und Scene-Contracts
+- [`docs/loss-taxonomy.md`](docs/loss-taxonomy.md) — Routen, Verluste, Gewinne und Evidence
+- [`docs/engine-dolmetscher.md`](docs/engine-dolmetscher.md) — Toolchain Planner, Code-Esperanto, Reverse Engineering und Engine Federation
+- [`docs/tool-candidate-catalog.md`](docs/tool-candidate-catalog.md) — essenzieller Kandidatenkatalog aus der Converter-Recherche
 
 ## Verwandte Repos
 
-- [`lootziffer666/SHADED`](https://github.com/lootziffer666/SHADED) — erster fließend rhetorischer Zieladapter
-- [`lootziffer666/FLOW-SPIN-SMASH`](https://github.com/lootziffer666/FLOW-SPIN-SMASH) — Manifold: Routing-Denken, Traceability-Gesetze
-- [`lootziffer666/adult_game`](https://github.com/lootziffer666/adult_game) — Vier-Schichten-Logik, Anti-Chore-Loop-Hypothese
+- [`lootziffer666/SHADED`](https://github.com/lootziffer666/SHADED) — rhetorische und field-first Projektion
+- [`lootziffer666/FLOW-SPIN-SMASH`](https://github.com/lootziffer666/FLOW-SPIN-SMASH) — MANIFOLD-Routing und Traceability
+- [`lootziffer666/adult_game`](https://github.com/lootziffer666/adult_game) — relationale Weltreaktion und Anti-Chore-Loop
+
+## Leitsatz
+
+> Ein Nutzer soll ungefiltert sagen können: Dieses Asset, diese Idee oder dieses
+> alte Spiel gefällt mir. Mach daraus diese kleine spielbare Form.
+>
+> Die Engine darf dabei Kosten und Fähigkeiten bestimmen — aber niemals der
+> kreative Türsteher sein.
