@@ -1,6 +1,6 @@
 # Realization Contracts — von Quelle zu gleichwertiger Verkörperung
 
-**Status:** Kanonische Vertragsschicht für TRIVIUM v1.1.
+**Status:** Kanonische Vertragsschicht für TRIVIUM v1.1. Schema v0.1.0 ist in `packages/trivium-contracts` implementiert. JSON (`*.contract.json`) ist das maschinenlesbare Dateiformat; YAML-Blöcke in diesem Dokument sind Illustration.
 
 Ein Realization Contract beschreibt nicht, wie ein Ziel technisch gebaut wird.
 Er beschreibt, was die neue Verkörperung leisten, bewahren und beweisen muss.

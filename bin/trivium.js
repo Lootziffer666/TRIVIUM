@@ -9,6 +9,8 @@
  *   --no-strict                   inkonsistente Welten trotzdem übersetzen
  *                                 (Fehler bleiben sichtbar im Report)
  *   --list                        registrierte Adapter zeigen und beenden
+ *   tools --list [--accepts X] [--produces Y]
+ *                                 Tool-Candidate-Registry abfragen
  *
  * Eingabe: eine WIR als JSON (validiert durch dieselben Builder wie die
  * JS-API — ein Eingang, eine Wahrheit) oder ein .js-Modul mit build().
@@ -25,11 +27,51 @@ const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const T = require(path.join(ROOT, "packages/trivium-core"));
 
+function runToolsCommand(args) {
+  const C = require(path.join(ROOT, "packages/trivium-contracts"));
+  const opts = { list: false, accepts: null, produces: null };
+  for (let i = 0; i < args.length; i++) {
+    const a = args[i];
+    if (a === "--list") opts.list = true;
+    else if (a === "--accepts") opts.accepts = args[++i];
+    else if (a === "--produces") opts.produces = args[++i];
+    else if (a === "--help" || a === "-h") {
+      console.log("usage: trivium tools --list [--accepts FORMAT] [--produces FORMAT]");
+      process.exit(0);
+    } else {
+      console.error(`trivium tools: unknown option '${a}'`);
+      process.exit(1);
+    }
+  }
+  if (!opts.list) {
+    console.error("trivium tools: --list is required");
+    process.exit(1);
+  }
+  try {
+    const registry = C.loadToolRegistry(path.join(ROOT, "registry", "tools"));
+    let tools = [...registry.values()];
+    if (opts.accepts) tools = tools.filter((tool) => tool.accepts.includes(opts.accepts));
+    if (opts.produces) tools = tools.filter((tool) => tool.produces.includes(opts.produces));
+    for (const tool of tools) {
+      console.log(`${tool.id} accepts=${tool.accepts.join(",")} produces=${tool.produces.join(",")} status=${tool.status} confidence=${tool.confidence}`);
+    }
+    if (registry.warnings.length) {
+      for (const w of registry.warnings) console.error(`warning: ${w}`);
+    }
+  } catch (err) {
+    console.error(`trivium tools: ${err.message}`);
+    process.exit(1);
+  }
+  process.exit(0);
+}
+
+if (process.argv[2] === "tools") runToolsCommand(process.argv.slice(3));
+
 // Das CLI kennt Adapter — der Kern nicht. Neue Engines hier registrieren.
 const BUILTIN_ADAPTERS = ["shaded", "godot", "love2d", "renpy", "unity", "unreal"];
 
 function usage(code) {
-  console.log("usage: trivium <welt.json|welt.js> [--target all|name,name] [--out dir] [--no-strict] [--list]");
+  console.log("usage: trivium <welt.json|welt.js> [--target all|name,name] [--out dir] [--no-strict] [--list]\n       trivium tools --list [--accepts FORMAT] [--produces FORMAT]");
   process.exit(code);
 }
 

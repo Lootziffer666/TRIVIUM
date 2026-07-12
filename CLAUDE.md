@@ -28,7 +28,7 @@ Dokumente: `docs/trivium-canon.md` (Invarianten), `docs/wir-spec.md`,
 ## Verifikation (Pflicht vor jedem Commit)
 
 ```bash
-node tools/verify.js   # 48 Tests + beide Beispielwelten in alle Adapter, Exit ≠ 0 bei FAIL
+node tools/verify.js   # 89 Tests + beide Beispielwelten in alle Adapter, Exit ≠ 0 bei FAIL
 ```
 
 Bei Änderungen am SHADED-Adapter oder am Driver-Generator zusätzlich der
