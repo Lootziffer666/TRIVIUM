@@ -19,11 +19,23 @@ Registern.
 
 ```bash
 node tools/verify.js
-# → 34 Tests, dann beide Beispielwelten in alle vier Zielsprachen:
+# → 41 Tests, dann beide Beispielwelten in alle vier Zielsprachen:
 #   tools/verify-out/{shaded,godot,love2d,renpy}/ mit Artefakten + TRANSLATION_REPORT.md
 ```
 
 Kein `npm install`. Null Dependencies. Pures Node.
+
+Oder direkt über das CLI — eine Welt als reine JSON-Datei, kein
+JavaScript nötig (dieselben Builder validieren beide Wege; das emittierte
+`<id>.wir.json` ist selbst wieder gültige Eingabe, Round-Trip bitidentisch):
+
+```bash
+node bin/trivium.js --list                                   # Adapter zeigen
+node bin/trivium.js meine-welt.json --target shaded,godot    # übersetzen
+node bin/trivium.js examples/dorf-sturmnacht.js --out out/   # .js geht auch
+# Exit 2 = übersetzt, aber Konzepte in needs_human_review — Enthaltung ist
+# Sicherheit, kein Erfolg.
+```
 
 Und der Beweis, dass die Übersetzung nicht nur emittiert wird, sondern
 **lebt** — der generierte Driver, ausgeführt im echten `window.SHADED`
@@ -90,7 +102,7 @@ adapters/
   love2d/                  → main.lua + Welt-Modul
   renpy/                   → .rpy mit adult_game-Vier-Schichten-Logik
 examples/                  zwei Welten (Dorf 2.5D, Turm 3D), vier Sprachen
-test/                      34 Tests, pures Node
+test/                      41 Tests, pures Node
 tools/verify.js            alles in einem Lauf
 ```
 

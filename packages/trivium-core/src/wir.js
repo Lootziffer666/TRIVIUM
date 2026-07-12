@@ -235,6 +235,34 @@ function conceptsOf(world) {
   return out;
 }
 
+/**
+ * fromJSON: eine WIR aus reinem JSON laden. Läuft ALLES durch die Builder,
+ * damit jede Validierung (geschlossener Intent-Kanon, Kinds, Typen, 0..1)
+ * auch für Welten gilt, die nie JavaScript gesehen haben. Kein zweiter,
+ * laxerer Eingang — eine Wahrheit für beide Wege.
+ */
+function fromJSON(data) {
+  const d = typeof data === "string" ? JSON.parse(data) : data;
+  if (!d || typeof d !== "object") throw new Error("fromJSON: not an object");
+  if (d.wirVersion && d.wirVersion !== WIR_VERSION) {
+    throw new Error(`fromJSON: wirVersion '${d.wirVersion}' ≠ ${WIR_VERSION} — refuse, don't guess`);
+  }
+  const w = createWorld(d.meta || {});
+  const g = d.grammar || {}, r = d.rhetoric || {}, l = d.logic || {};
+  for (const e of g.entities || []) addEntity(w, e);
+  for (const rel of g.relations || []) addRelation(w, rel);
+  for (const s of g.spaces || []) addSpace(w, s);
+  for (const m of r.moments || []) {
+    addMoment(w, { ...m, durationSec: m.durationSec });
+  }
+  if (r.arc) setArc(w, r.arc);
+  for (const s of l.state || []) addState(w, s);
+  for (const rule of l.rules || []) addRule(w, rule);
+  for (const m of l.machines || []) addMachine(w, m);
+  for (const mem of l.memories || []) addMemory(w, mem);
+  return w;
+}
+
 function requireId(obj, what) {
   if (!obj || typeof obj.id !== "string" || !obj.id.length) {
     throw new Error(`${what}: id (string) is required`);
@@ -253,5 +281,5 @@ module.exports = {
   WIR_VERSION, INTENT_AXES, ENTITY_KINDS, RELATION_TYPES,
   createWorld, addEntity, addRelation, addSpace,
   addMoment, setArc, addState, addRule, addMachine, addMemory,
-  conceptsOf, deepFreeze,
+  conceptsOf, deepFreeze, fromJSON,
 };

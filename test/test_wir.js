@@ -54,4 +54,16 @@ t("conceptsOf flattens all three strata with stable ids", () => {
   assert.ok(kinds.has("logic.state.hidden"));
 });
 
+t("fromJSON round-trips a world losslessly", () => {
+  const { build } = require("../examples/dorf-sturmnacht");
+  const w = build();
+  const w2 = T.fromJSON(JSON.stringify(w));
+  assert.deepStrictEqual(w2, w);
+});
+
+t("fromJSON enforces the same laws as the builders", () => {
+  assert.throws(() => T.fromJSON({ meta: { id: "x" }, rhetoric: { moments: [{ id: "m", intents: { u_rain: 0.5 } }] } }), /unknown intent axis/);
+  assert.throws(() => T.fromJSON({ wirVersion: "0.1.0", meta: { id: "x" } }), /refuse/);
+});
+
 console.log(`test_wir: ${n} passed`);
