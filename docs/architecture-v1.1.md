@@ -104,7 +104,9 @@ requested outcome
 Liegt primär bei ANVIL/MYTHIC. TRIVIUM emittiert einen Plan; der Executor führt
 ihn mit Logs, Hashes und Recovery aus.
 
-## 4. Planformat — Entwurf
+## 4. Planformat — implementiert als TIR v0.1
+
+TIR v0.1 ist als JSON-Planformat (`*.plan.json`) mit Validator in `packages/trivium-contracts` implementiert. YAML unten bleibt die historische Entwurfsskizze.
 
 ```yaml
 planVersion: 0.1

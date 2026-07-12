@@ -50,3 +50,6 @@ v0.1 registry warns on unknown tokens but does not reject them.
 - `sdf`
 - `terrain.heightmap`
 - `geodata`
+- `unity.package`
+- `work.dir`
+- `godot.resource`

@@ -76,6 +76,26 @@ try {
   console.error(`FAIL: lemma corpus: ${err.message}`);
 }
 
+
+// ── 1.8 plan fixtures ──────────────────────────────────────────────────
+process.stdout.write(`\n== plan fixtures ==\n`);
+try {
+  const C = require(path.join(ROOT, "packages/trivium-contracts"));
+  const tools = C.loadToolRegistry(path.join(ROOT, "registry", "tools"));
+  const plansDir = path.join(ROOT, "examples", "plans");
+  const fixtures = fs.existsSync(plansDir)
+    ? fs.readdirSync(plansDir).filter((f) => f.endsWith(".plan.json")).sort()
+    : [];
+  for (const f of fixtures) {
+    C.loadPlanFile(path.join(plansDir, f), tools);
+    console.log(`  ok ${f}`);
+  }
+  console.log(`plan fixtures: ${fixtures.length} passed`);
+} catch (err) {
+  failed = true;
+  console.error(`FAIL: plan fixtures: ${err.message}`);
+}
+
 // ── 2. translate every example world to every adapter ────────────────────
 const T = require(path.join(ROOT, "packages/trivium-core"));
 const examplesDir = path.join(ROOT, "examples");

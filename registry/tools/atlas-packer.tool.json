@@ -1,0 +1,52 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "atlas-packer",
+  "kind": "tool",
+  "source": {
+    "type": "local-tool",
+    "provenance": "Fablesletzterwille.md WP-B1 fixture support",
+    "license": "unknown"
+  },
+  "repository": "local/atlas-packer",
+  "license": "unknown",
+  "last_verified": "2026-07-12",
+  "source_versions": [
+    "unknown"
+  ],
+  "target_versions": [
+    "unknown"
+  ],
+  "execution_mode": "cli",
+  "headless": "unknown",
+  "accepts": [
+    "png.frames"
+  ],
+  "produces": [
+    "png.atlas",
+    "json"
+  ],
+  "capabilities": [
+    "pack_sprite_atlas"
+  ],
+  "unknown": [
+    "exact_local_installation",
+    "version_support",
+    "fixture_reproducibility"
+  ],
+  "known_losses": [
+    "unverified local manifest; losses unknown until fixture evidence exists"
+  ],
+  "manual_steps": [
+    "pin local executable",
+    "record version",
+    "attach evidence dossier"
+  ],
+  "fixture": null,
+  "evidence": null,
+  "confidence": 0.2,
+  "status": "candidate",
+  "execution": {
+    "mode": "cli",
+    "headless": "unknown"
+  }
+}

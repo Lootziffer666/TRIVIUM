@@ -436,7 +436,7 @@ Statuswerte: `offen` · `in_arbeit` · `fertig` · `verworfen(→§12)`.
 
 | A4 | Corpus-Schema + 5 Beweis-Lemmata | A1 | fertig |
 
-| B1 | TIR-Planformat v0.1 + Validator | A1, A3 | offen |
+| B1 | TIR-Planformat v0.1 + Validator | A1, A3 | fertig |
 
 | B2 | Planner-Skelett (Capability Graph, Ranking) | B1 | offen |
 
