@@ -428,13 +428,13 @@ Statuswerte: `offen` · `in_arbeit` · `fertig` · `verworfen(→§12)`.
 
 |---|---|---|---|
 
-| A1 | Contract-Schema + Validator (`trivium-contracts`) | — | offen |
+| A1 | Contract-Schema + Validator (`trivium-contracts`) | — | fertig |
 
-| A2 | Realisierungsrouten im Ledger + Durchsetzung | — | offen |
+| A2 | Realisierungsrouten im Ledger + Durchsetzung | — | fertig |
 
-| A3 | Tool-Manifest-Schema + Candidate Registry | A1 | offen |
+| A3 | Tool-Manifest-Schema + Candidate Registry | A1 | fertig |
 
-| A4 | Corpus-Schema + 5 Beweis-Lemmata | A1 | offen |
+| A4 | Corpus-Schema + 5 Beweis-Lemmata | A1 | fertig |
 
 | B1 | TIR-Planformat v0.1 + Validator | A1, A3 | offen |
 

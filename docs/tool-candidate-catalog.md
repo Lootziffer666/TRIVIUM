@@ -1,7 +1,9 @@
 # Tool Candidate Catalog — Converter, Importer und Realization-Werkzeuge
 
 **Status:** Kanonischer Kandidatenkatalog aus der Screenshot- und Repo-Recherche
-vom 12. Juli 2026.
+vom 12. Juli 2026. Alle P0-Kandidaten sind zusätzlich als maschinenlesbare
+Tool-Contracts unter `registry/tools/*.tool.json` erfasst; sie bleiben
+`candidate`, bis ein reproduzierbares Fixture Evidence liefert.
 
 Dieser Katalog ist absichtlich kein Versprechen, dass jedes Repository
 produktionsreif ist. Er bewahrt die Recherche als Entwicklungsgrundlage und

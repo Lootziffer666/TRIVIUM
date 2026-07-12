@@ -1,0 +1,14 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "door.make_inactive",
+  "kind": "function",
+  "source": { "type": "code-evidence", "provenance": "documentation-example" },
+  "inputs": ["door_state"],
+  "preconditions": ["door_exists"],
+  "reads": ["door.lock_state"],
+  "writes": ["door.active", "passage.blocked", "navigation.version"],
+  "side_effects": ["emit door_state_changed"],
+  "postconditions": ["door_not_interactable", "collision_disabled", "passage_traversable"],
+  "error_behavior": ["missing_door_is_reported"],
+  "must_not": ["visual_only_hide"]
+}
