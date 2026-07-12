@@ -40,7 +40,11 @@ for (const name of ["shaded", "godot", "love2d", "renpy"]) {
   reg.register(require(path.join(ROOT, "adapters", name, "adapter")).adapter);
 }
 
-fs.rmSync(OUT, { recursive: true, force: true });
+// Nur eigene Übersetzungs-Ordner räumen — live_*.png von verify-live
+// sind fremde Beweise und bleiben liegen.
+for (const build of worlds) {
+  fs.rmSync(path.join(OUT, build().meta.id), { recursive: true, force: true });
+}
 for (const build of worlds) {
 const worldId = build().meta.id;
 console.log(`\n== translations: ${worldId} ==`);

@@ -44,9 +44,11 @@ Und der Beweis, dass die Übersetzung nicht nur emittiert wird, sondern
 ```bash
 npm i --no-save playwright
 node tools/verify-live.js
-# → 10 Verhaltens-Assertions in der echten Engine: Storyboard installiert,
+# → 13 Verhaltens-Assertions in der echten Engine: Storyboard installiert,
 #   Momente setzen Parameter, Fehlversuche lehren, der Laternen-Fund
-#   wechselt die Welt in 'Der Tag danach'. VERIFY-LIVE: PASS
+#   wechselt die Welt in 'Der Tag danach', die Wächterin betritt als
+#   Actor sichtbar die Szene. Screenshots: tools/verify-out/live_*.png
+#   VERIFY-LIVE: PASS
 ```
 
 ## Die Idee in 20 Zeilen
