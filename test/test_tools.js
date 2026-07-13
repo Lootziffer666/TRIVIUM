@@ -54,12 +54,17 @@ t("registry loads all P0 candidates", () => {
   assert.strictEqual(registry.warnings.length, 0);
 });
 
-t("registry contains only candidate tools without evidence claims", () => {
+t("registry keeps candidates conservative and verified tools evidence-backed", () => {
   const registry = C.loadToolRegistry(TOOLS, { formatsPath: path.join(ROOT, "registry", "formats.md") });
   for (const tool of registry.values()) {
-    assert.strictEqual(tool.status, "candidate");
-    assert.strictEqual(tool.evidence, null);
-    assert.ok(tool.confidence <= 0.3);
+    if (tool.status === "candidate") {
+      assert.strictEqual(tool.evidence, null);
+      assert.ok(tool.confidence <= 0.3);
+    } else if (tool.status === "verified") {
+      assert.ok(tool.evidence, `${tool.id} is verified without evidence`);
+    } else {
+      assert.fail(`unexpected status ${tool.status}`);
+    }
   }
 });
 

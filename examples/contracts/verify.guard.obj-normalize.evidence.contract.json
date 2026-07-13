@@ -1,0 +1,20 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "verify.guard.obj-normalize",
+  "kind": "evidence",
+  "source": { "type": "proof-route", "provenance": "examples/plans/guard-obj-normalize.plan.json" },
+  "checks": [
+    "file_exists fixtures/out/guard.obj",
+    "file_exists fixtures/out/guard.normalized.glb",
+    "file_exists fixtures/out/guard.normalize.report.json",
+    "json_path fixtures/out/guard.normalize.report.json gltf.extras.normalized.pivotAtGround eq true",
+    "json_path fixtures/out/guard.normalize.report.json gltf.extras.normalized.bbox.height gte 1.5",
+    "json_path fixtures/out/guard.normalize.report.json gltf.extras.normalized.bbox.height lte 1.6",
+    "report_route_count fixtures/out/guard.normalize.report.json normalize eq 1"
+  ],
+  "artifacts": [
+    "fixtures/out/guard.obj",
+    "fixtures/out/guard.normalized.glb",
+    "fixtures/out/guard.normalize.report.json"
+  ]
+}

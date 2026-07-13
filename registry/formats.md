@@ -53,3 +53,5 @@ v0.1 registry warns on unknown tokens but does not reject them.
 - `unity.package`
 - `work.dir`
 - `godot.resource`
+- `obj`
+- `godot.tres`

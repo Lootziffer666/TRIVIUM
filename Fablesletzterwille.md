@@ -442,9 +442,9 @@ Statuswerte: `offen` · `in_arbeit` · `fertig` · `verworfen(→§12)`.
 
 | B3 | Dry-Run-Executor + Plan-Hashing | B1 | fertig |
 
-| C1 | Beweisroute 1: 3D-Asset → Engine-Import (direct/normalize) | B2, B3 | offen |
+| C1 | Beweisroute 1: 3D-Asset → Engine-Import (direct/normalize) | B2, B3 | fertig |
 
-| C2 | Beweisroute 2: 3D-Asset → 8-Richtungs-Spritesheet (bake/project) | C1 | offen |
+| C2 | Beweisroute 2: 3D-Asset → 8-Richtungs-Spritesheet (bake/project) | C1 | fertig |
 
 | C3 | Beweisroute 3: Engine-Szene → neutrale Beschreibung → andere Projektion | C1 | offen |
 

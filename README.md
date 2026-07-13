@@ -23,7 +23,7 @@ prüfen.
 
 ```bash
 node tools/verify.js
-# → 130 Tests, dann beide Beispielwelten in alle sechs Zielsprachen:
+# → 139 Tests, dann beide Beispielwelten in alle sechs Zielsprachen:
 #   tools/verify-out/<welt>/{shaded,godot,love2d,renpy,unity,unreal}/
 ```
 
