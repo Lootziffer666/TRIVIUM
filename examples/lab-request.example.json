@@ -5,8 +5,16 @@
   "source": {
     "kind": "directory",
     "path": "./owned-game-copy",
+    "manifestPath": "./source-manifest.json",
+    "formatHint": "scumm-v5",
     "ownershipConfirmed": true,
     "provenance": "user-owned installation"
+  },
+  "ai": {
+    "gateway": "bellows",
+    "baseUrlEnv": "BELLOWS_BASE_URL",
+    "apiKeyEnv": "BELLOWS_API_KEY",
+    "modelEnv": "BELLOWS_MODEL"
   },
   "intent": {
     "target": "shaded",
@@ -23,7 +31,8 @@
       "width": 96,
       "height": 96,
       "colors": 24,
-      "backgroundRemoval": "none",
+      "backgroundRemoval": "ai",
+      "rembgModel": "u2net",
       "baselineNormalization": false
     },
     "world": {
