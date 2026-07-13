@@ -1,0 +1,14 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "scene.shaded-import",
+  "kind": "scene",
+  "source": { "type": "fixture", "provenance": "fixtures/shaded/sturmnacht.storyboard.json" },
+  "runtime": "shaded",
+  "inputs": ["shaded.storyboard"],
+  "outputs": ["wir.json", "renpy.rpy"],
+  "entry": { "artifact": "fixtures/shaded/sturmnacht.storyboard.json" },
+  "exit": { "artifact": "fixtures/out/shaded-renpy/shaded-sturmnacht_trivium.rpy" },
+  "handoff": { "route": "reconstruct", "review": "import.losses are retained in the evidence dossier" },
+  "preserve": ["source storyboard", "import report"],
+  "verify": ["examples/contracts/verify.shaded-to-renpy.evidence.contract.json"]
+}

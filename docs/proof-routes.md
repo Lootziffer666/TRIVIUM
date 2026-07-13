@@ -70,3 +70,27 @@ mechanism without external DCC tools.
 True silhouette similarity scoring is still research/manual review. The current
 automated proof verifies non-empty, consistently bounded directional silhouettes
 and explicit losses/gains in the ledger.
+
+## C3 — Engine scene recovery and alternate projection
+
+C3 exercises the reverse direction: an engine-facing scene artifact is lifted into a neutral description before being projected elsewhere.
+
+### C3a: SHADED storyboard → WIR → Ren'Py
+
+- Source fixture: `fixtures/shaded/sturmnacht.storyboard.json`.
+- Plan: `examples/plans/shaded-storyboard-to-renpy.plan.json`.
+- Contract: `examples/contracts/scene.shaded-import.scene.contract.json`.
+- Evidence: `examples/contracts/verify.shaded-to-renpy.evidence.contract.json`.
+- Tools: `trivium.shaded-storyboard-import` reconstructs WIR through the existing SHADED importer; `trivium.wir-to-renpy` projects the recovered WIR to a Ren'Py script.
+
+The importer intentionally preserves SHADED-only parameters such as `flash` as documented import losses. A passing route must therefore prove both that WIR and Ren'Py artifacts exist and that the import dossier still records the engine-only residue.
+
+### C3b: Godot `.tscn` fragment → EIR/WIR with review debt
+
+- Source fixture: `fixtures/godot/five-node-scene.tscn`.
+- Plan: `examples/plans/godot-tscn-fragment-to-wir.plan.json`.
+- Contract: `examples/contracts/scene.godot-tscn-fragment.scene.contract.json`.
+- Evidence: `examples/contracts/verify.godot-tscn-fragment.evidence.contract.json`.
+- Tool: `trivium.tscn-fragment-reader` reads only dependency-free node headers and emits an EIR fragment plus a WIR scene fragment.
+
+This is not a full Godot parser. Known node types (`Node2D`, `Area2D`, `CharacterBody2D`) are mapped into WIR entities; unsupported nodes (`CollisionShape2D`, `GPUParticles2D` in the fixture) are routed to `needs_human_review`. For C3, a zero-review recovery is suspicious rather than successful.

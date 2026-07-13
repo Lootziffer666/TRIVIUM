@@ -1,0 +1,14 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "scene.godot-tscn-fragment",
+  "kind": "scene",
+  "source": { "type": "fixture", "provenance": "fixtures/godot/five-node-scene.tscn" },
+  "runtime": "godot",
+  "inputs": ["godot.tscn"],
+  "outputs": ["eir.json", "wir.json"],
+  "entry": { "artifact": "fixtures/godot/five-node-scene.tscn" },
+  "exit": { "artifact": "fixtures/out/godot-five-node.wir.json" },
+  "handoff": { "route": "reconstruct", "review": "unsupported nodes must be explicit needs_human_review entries" },
+  "preserve": ["source TSCN", "EIR fragment", "review dossier"],
+  "verify": ["examples/contracts/verify.godot-tscn-fragment.evidence.contract.json"]
+}

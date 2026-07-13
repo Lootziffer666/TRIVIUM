@@ -446,7 +446,7 @@ Statuswerte: `offen` · `in_arbeit` · `fertig` · `verworfen(→§12)`.
 
 | C2 | Beweisroute 2: 3D-Asset → 8-Richtungs-Spritesheet (bake/project) | C1 | fertig |
 
-| C3 | Beweisroute 3: Engine-Szene → neutrale Beschreibung → andere Projektion | C1 | offen |
+| C3 | Beweisroute 3: Engine-Szene → neutrale Beschreibung → andere Projektion | C1 | fertig |
 
 | D1 | FIR-Schema + Lemma-Katalog (30 Lemmata) | A4 | offen |
 

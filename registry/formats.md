@@ -55,3 +55,7 @@ v0.1 registry warns on unknown tokens but does not reject them.
 - `godot.resource`
 - `obj`
 - `godot.tres`
+- `shaded.storyboard`
+- `wir.json`
+- `renpy.rpy`
+- `eir.json`

@@ -1,0 +1,28 @@
+{
+  "planVersion": "0.1.0",
+  "id": "shaded-storyboard-to-renpy",
+  "route": "reconstruct",
+  "source": {
+    "artifact": "fixtures/shaded/sturmnacht.storyboard.json",
+    "contractRef": "examples/contracts/scene.shaded-import.scene.contract.json"
+  },
+  "target": { "runtime": "renpy", "form": "vn-script" },
+  "steps": [
+    {
+      "id": "import_shaded_storyboard",
+      "tool": "trivium.shaded-storyboard-import",
+      "inputs": ["fixtures/shaded/sturmnacht.storyboard.json"],
+      "produces": ["fixtures/out/shaded-import.wir.json", "fixtures/out/shaded-import.report.json"],
+      "args": ["tools/recipes/shaded-storyboard-to-wir.js", "fixtures/shaded/sturmnacht.storyboard.json", "fixtures/out/shaded-import.wir.json", "fixtures/out/shaded-import.report.json"]
+    },
+    {
+      "id": "project_to_renpy",
+      "tool": "trivium.wir-to-renpy",
+      "inputs": ["fixtures/out/shaded-import.wir.json"],
+      "produces": ["fixtures/out/shaded-renpy/shaded-sturmnacht_trivium.rpy", "fixtures/out/shaded-to-renpy.report.json"],
+      "args": ["tools/recipes/wir-to-target.js", "fixtures/out/shaded-import.wir.json", "renpy", "fixtures/out/shaded-renpy", "fixtures/out/shaded-to-renpy.report.json"]
+    }
+  ],
+  "verify": { "contractRef": "examples/contracts/verify.shaded-to-renpy.evidence.contract.json" },
+  "fallbacks": ["manual_review_import_losses", "author_final_vn_assets"]
+}

@@ -1,0 +1,18 @@
+{
+  "meta": {
+    "id": "shaded-sturmnacht",
+    "title": "SHADED Sturmnacht"
+  },
+  "steps": [
+    {
+      "name": "Goldener Tag",
+      "dur": 2,
+      "p": { "dayNight": 0, "storm": 0.03, "rain": 0, "wet": 0, "fog": 0.05, "wind": 0.3, "glow": 0.1, "temperature": 0.7 }
+    },
+    {
+      "name": "Sturmnacht",
+      "dur": 5,
+      "p": { "dayNight": 1, "storm": 1, "rain": 1, "wet": 1, "fog": 0.4, "wind": 1, "glow": 1, "temperature": 0.52, "flash": 1 }
+    }
+  ]
+}
