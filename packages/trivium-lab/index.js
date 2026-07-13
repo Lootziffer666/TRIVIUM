@@ -181,12 +181,18 @@ function createHandoffs(input) {
     },
     swift: {
       ...common,
-      action: "realize-actors",
+      action: "plan-actor-jobs",
       inputs: {
         assetBindings: "wizard/asset-bindings.json",
         behaviorObservations: "decompile/behavior-observations.json",
       },
       options: request.options.actors,
+      jobContract: {
+        schemaVersion: BUNDLE_VERSION,
+        module: "trivium-lab",
+        action: "realize-actor",
+        requiredFields: ["job.kind", "job.source", "job.output"],
+      },
       expectedOutputs: ["actorSheets", "actorManifests", "actorEvidence"],
     },
     shaded: {
