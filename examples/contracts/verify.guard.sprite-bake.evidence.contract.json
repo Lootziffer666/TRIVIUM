@@ -1,0 +1,22 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "verify.guard.sprite-bake",
+  "kind": "evidence",
+  "source": { "type": "proof-route", "provenance": "examples/plans/guard-sprite-bake.plan.json" },
+  "checks": [
+    "file_exists fixtures/out/guard.atlas.png",
+    "file_exists fixtures/out/guard.tres",
+    "file_exists fixtures/out/guard.sprite.report.json",
+    "json_path fixtures/out/guard.atlas.json frameCount eq 8",
+    "json_path fixtures/out/guard.atlas.json alphaPresent eq true",
+    "json_path fixtures/out/guard.atlas.json bboxConsistent eq true",
+    "report_route_count fixtures/out/guard.sprite.report.json bake eq 1",
+    "report_route_count fixtures/out/guard.sprite.report.json project eq 1"
+  ],
+  "artifacts": [
+    "fixtures/out/guard.atlas.png",
+    "fixtures/out/guard.atlas.json",
+    "fixtures/out/guard.tres",
+    "fixtures/out/guard.sprite.report.json"
+  ]
+}

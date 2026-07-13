@@ -1,0 +1,19 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "verify.shaded-to-renpy",
+  "kind": "evidence",
+  "source": { "type": "fixture", "provenance": "examples/plans/shaded-storyboard-to-renpy.plan.json" },
+  "checks": [
+    "file_exists fixtures/out/shaded-import.wir.json",
+    "file_exists fixtures/out/shaded-renpy/shaded-sturmnacht_trivium.rpy",
+    "json_path fixtures/out/shaded-import.report.json summary.byRoute.reconstruct eq 1",
+    "json_path fixtures/out/shaded-import.report.json import.losses.0.param eq flash",
+    "json_path fixtures/out/shaded-to-renpy.report.json summary.needsHumanReview eq false"
+  ],
+  "artifacts": [
+    "fixtures/out/shaded-import.wir.json",
+    "fixtures/out/shaded-import.report.json",
+    "fixtures/out/shaded-renpy/shaded-sturmnacht_trivium.rpy",
+    "fixtures/out/shaded-to-renpy.report.json"
+  ]
+}

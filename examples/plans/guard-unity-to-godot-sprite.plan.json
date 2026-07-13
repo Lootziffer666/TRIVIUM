@@ -1,0 +1,51 @@
+{
+  "planVersion": "0.1.0",
+  "id": "guard-unity-to-godot-sprite",
+  "route": "project",
+  "source": {
+    "artifact": "sources/guard.unitypackage",
+    "contractRef": "examples/contracts/actor.guard.asset.contract.json"
+  },
+  "target": {
+    "runtime": "godot",
+    "form": "sprite2d"
+  },
+  "steps": [
+    {
+      "id": "extract",
+      "tool": "assetripper",
+      "inputs": ["sources/guard.unitypackage"],
+      "produces": ["work/guard-project"]
+    },
+    {
+      "id": "normalize",
+      "tool": "blender",
+      "script": "recipes/normalize-humanoid.py",
+      "inputs": ["work/guard-project"],
+      "produces": ["work/guard.glb"]
+    },
+    {
+      "id": "render",
+      "tool": "blender",
+      "script": "recipes/render-eight-direction.py",
+      "inputs": ["work/guard.glb"],
+      "produces": ["work/frames"]
+    },
+    {
+      "id": "pack",
+      "tool": "atlas-packer",
+      "inputs": ["work/frames"],
+      "produces": ["out/guard.png", "out/guard.atlas.json"]
+    },
+    {
+      "id": "import",
+      "tool": "godot-headless",
+      "inputs": ["out/guard.png", "out/guard.atlas.json"],
+      "produces": ["out/guard.tres"]
+    }
+  ],
+  "verify": {
+    "contractRef": "examples/contracts/verify.guard.sprite.evidence.contract.json"
+  },
+  "fallbacks": ["use_four_directions", "human_review_rig"]
+}

@@ -1,0 +1,21 @@
+{
+  "planVersion": "0.1.0",
+  "id": "godot-tscn-fragment-to-wir",
+  "route": "reconstruct",
+  "source": {
+    "artifact": "fixtures/godot/five-node-scene.tscn",
+    "contractRef": "examples/contracts/scene.godot-tscn-fragment.scene.contract.json"
+  },
+  "target": { "runtime": "wir", "form": "scene-fragment" },
+  "steps": [
+    {
+      "id": "read_tscn_fragment",
+      "tool": "trivium.tscn-fragment-reader",
+      "inputs": ["fixtures/godot/five-node-scene.tscn"],
+      "produces": ["fixtures/out/godot-five-node.wir.json", "fixtures/out/godot-five-node.eir.json", "fixtures/out/godot-five-node.report.json"],
+      "args": ["tools/recipes/tscn-fragment-to-wir.js", "fixtures/godot/five-node-scene.tscn", "fixtures/out/godot-five-node.wir.json", "fixtures/out/godot-five-node.eir.json", "fixtures/out/godot-five-node.report.json"]
+    }
+  ],
+  "verify": { "contractRef": "examples/contracts/verify.godot-tscn-fragment.evidence.contract.json" },
+  "fallbacks": ["replace with vetted tscn2json candidate", "manual_review_unknown_nodes"]
+}

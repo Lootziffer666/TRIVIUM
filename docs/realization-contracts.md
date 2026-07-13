@@ -1,6 +1,6 @@
 # Realization Contracts — von Quelle zu gleichwertiger Verkörperung
 
-**Status:** Kanonische Vertragsschicht für TRIVIUM v1.1.
+**Status:** Kanonische Vertragsschicht für TRIVIUM v1.1. Schema v0.1.0 ist in `packages/trivium-contracts` implementiert. JSON (`*.contract.json`) ist das maschinenlesbare Dateiformat; YAML-Blöcke in diesem Dokument sind Illustration.
 
 Ein Realization Contract beschreibt nicht, wie ein Ziel technisch gebaut wird.
 Er beschreibt, was die neue Verkörperung leisten, bewahren und beweisen muss.
@@ -209,7 +209,7 @@ Ein Tool Contract darf Lücken enthalten. Diese werden vom Planner entweder
 
 ## 9. Evidence Contract
 
-Jede Route braucht Beweise, die auf den eigentlichen Vertrag zielen.
+Evidence Contracts sind mit dem CUE-light Runner `tools/verify-evidence.js` ausführbar (`file_exists`, `file_hash`, `json_path`, `image_dimensions`, `report_route_count`, `manual`). Jede Route braucht Beweise, die auf den eigentlichen Vertrag zielen.
 
 ```yaml
 id: verify.guard.sprite

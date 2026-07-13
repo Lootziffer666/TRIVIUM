@@ -1,0 +1,53 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "arghyasur1991-spark-tts-unity",
+  "kind": "tool",
+  "source": {
+    "type": "github",
+    "provenance": "docs/tool-candidate-catalog.md#P0",
+    "license": "unknown"
+  },
+  "repository": "https://github.com/arghyasur1991/Spark-TTS-Unity",
+  "license": "unknown",
+  "last_verified": "2026-07-12",
+  "source_versions": [
+    "unknown"
+  ],
+  "target_versions": [
+    "unknown"
+  ],
+  "execution_mode": "unknown",
+  "headless": "unknown",
+  "accepts": [
+    "audio.tts"
+  ],
+  "produces": [
+    "unity.csharp"
+  ],
+  "capabilities": [
+    "on_device_tts"
+  ],
+  "unknown": [
+    "actual_functional_scope",
+    "license",
+    "version_support",
+    "headless_behavior",
+    "fixture_reproducibility"
+  ],
+  "known_losses": [
+    "unverified candidate; losses unknown until fixture evidence exists"
+  ],
+  "manual_steps": [
+    "review repository metadata",
+    "build or select reproducible fixture",
+    "verify license and supported versions"
+  ],
+  "fixture": null,
+  "evidence": null,
+  "confidence": 0.2,
+  "status": "candidate",
+  "execution": {
+    "mode": "unknown",
+    "headless": "unknown"
+  }
+}

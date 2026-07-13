@@ -1,0 +1,18 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "verify.godot-tscn-fragment",
+  "kind": "evidence",
+  "source": { "type": "fixture", "provenance": "examples/plans/godot-tscn-fragment-to-wir.plan.json" },
+  "checks": [
+    "file_exists fixtures/out/godot-five-node.wir.json",
+    "file_exists fixtures/out/godot-five-node.eir.json",
+    "json_path fixtures/out/godot-five-node.report.json reviewCount gte 1",
+    "json_path fixtures/out/godot-five-node.report.json summary.byRoute.unknown gte 1",
+    "json_path fixtures/out/godot-five-node.eir.json needs_human_review.0.type eq CollisionShape2D"
+  ],
+  "artifacts": [
+    "fixtures/out/godot-five-node.wir.json",
+    "fixtures/out/godot-five-node.eir.json",
+    "fixtures/out/godot-five-node.report.json"
+  ]
+}

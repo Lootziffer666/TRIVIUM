@@ -1,0 +1,119 @@
+{
+  "lemmaVersion": "0.1.0",
+  "id": "trigger.zone_enter",
+  "intent": "react once or repeatedly when an actor enters a semantic zone",
+  "contract": {
+    "contractVersion": "0.1.0",
+    "id": "trigger.zone_enter.contract",
+    "kind": "function",
+    "source": {
+      "type": "lemma",
+      "provenance": "corpus/lemmata"
+    },
+    "inputs": [
+      "actor_position",
+      "zone_state"
+    ],
+    "preconditions": [
+      "subject_exists"
+    ],
+    "reads": [
+      "zone.bounds",
+      "actor.identity"
+    ],
+    "writes": [
+      "zone.entered",
+      "world.reaction"
+    ],
+    "side_effects": [
+      "emit semantic_state_changed"
+    ],
+    "postconditions": [
+      "entry_reaction_occurs_when_actor_crosses_boundary",
+      "non_entering_actor_does_not_trigger"
+    ],
+    "error_behavior": [
+      "missing_subject_is_reported"
+    ],
+    "must_not": [
+      "polling_without_boundary_semantics"
+    ]
+  },
+  "idioms": {
+    "unity": {
+      "constructs": [
+        "Trigger collider",
+        "OnTriggerEnter callback",
+        "actor tag or semantic id filter"
+      ],
+      "lifecycle": "bind during scene initialization and update through semantic state transitions",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "engine lifecycle details are not represented in lemma tests"
+      ],
+      "gains": [
+        "engine observability can expose debug state"
+      ],
+      "confidence": 0.55
+    },
+    "unreal": {
+      "constructs": [
+        "Overlap volume",
+        "BeginOverlap event",
+        "actor gameplay tag filter"
+      ],
+      "lifecycle": "bind in actor/component setup and execute through events or state changes",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "blueprint/native split is not resolved here"
+      ],
+      "gains": [
+        "editor-exposed properties can aid verification"
+      ],
+      "confidence": 0.55
+    },
+    "godot": {
+      "constructs": [
+        "Area body_entered signal",
+        "collision layer filter",
+        "semantic actor group"
+      ],
+      "lifecycle": "bind in scene tree readiness and react through signals or state changes",
+      "notes": "descriptive idiom only; D2 owns code generation",
+      "losses": [
+        "node ownership policy is target-specific"
+      ],
+      "gains": [
+        "signals make event traces explicit"
+      ],
+      "confidence": 0.55
+    }
+  },
+  "tests": [
+    {
+      "given": [
+        "actor outside zone",
+        "zone is active"
+      ],
+      "when": [
+        "actor crosses into zone"
+      ],
+      "then": [
+        "entry_reaction_occurs_when_actor_crosses_boundary",
+        "zone.entered is recorded"
+      ]
+    },
+    {
+      "given": [
+        "actor remains outside zone"
+      ],
+      "when": [
+        "time advances"
+      ],
+      "then": [
+        "non_entering_actor_does_not_trigger",
+        "world reaction is unchanged"
+      ]
+    }
+  ]
+}

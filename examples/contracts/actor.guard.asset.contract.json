@@ -1,0 +1,10 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "actor.guard",
+  "kind": "asset",
+  "source": { "engine": "unity", "type": "prefab", "provenance": "documentation-example", "license": "asset-registry/guard-license" },
+  "role": { "semantic": "humanoid_guard" },
+  "required": ["recognizable_silhouette", "idle", "walk", "blocking_collision", "interaction_anchor"],
+  "optional": ["facial_rig", "cloth", "advanced_lod"],
+  "acceptable_realizations": ["unreal_skeletal_actor", "godot_characterbody3d", "eight_direction_sprite", "audio_only_presence"]
+}

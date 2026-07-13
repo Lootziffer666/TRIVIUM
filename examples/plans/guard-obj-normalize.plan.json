@@ -1,0 +1,26 @@
+{
+  "planVersion": "0.1.0",
+  "id": "guard-obj-normalize",
+  "route": "normalize",
+  "source": {
+    "artifact": "fixtures/out/guard.obj",
+    "contractRef": "examples/contracts/actor.guard.asset.contract.json"
+  },
+  "target": {
+    "runtime": "neutral",
+    "form": "glb"
+  },
+  "steps": [
+    {
+      "id": "normalize",
+      "tool": "trivium.obj-normalize",
+      "inputs": ["fixtures/out/guard.obj"],
+      "produces": ["fixtures/out/guard.normalized.glb", "fixtures/out/guard.normalize.report.json"],
+      "args": ["tools/recipes/obj-normalize.js", "fixtures/out/guard.obj", "fixtures/out/guard.normalized.glb", "fixtures/out/guard.normalize.report.json"]
+    }
+  ],
+  "verify": {
+    "contractRef": "examples/contracts/verify.guard.obj-normalize.evidence.contract.json"
+  },
+  "fallbacks": ["use_blender_headless_when_available", "human_review_importer_fidelity"]
+}
