@@ -3,9 +3,9 @@
 const fs = require("fs");
 const path = require("path");
 const { validatePlan } = require("../trivium-contracts");
-const { resolveBellowsConfig, callBellows } = require("./bellows-client");
+const { resolveBellowsConfig, callBellows, callBellowsVision, createVisionMessage, imageFileToDataUrl } = require("./bellows-client");
 
-const MODULE_VERSION = "0.2.0";
+const MODULE_VERSION = "0.3.0";
 const REQUEST_VERSION = "1.0.0";
 const BUNDLE_VERSION = "1.0.0";
 const SOURCE_KINDS = Object.freeze(["archive", "binary", "directory", "image-set", "video", "capture"]);
@@ -37,7 +37,7 @@ function validateRequest(value) {
   }
   if (!isObject(value.intent)) add("request: intent object is required");
   else {
-    if (value.intent.target !== "shaded") add("request: LAB v0.2 currently supports intent.target='shaded'");
+    if (value.intent.target !== "shaded") add("request: LAB v0.3 currently supports intent.target='shaded'");
     if (!MODES.includes(value.intent.mode)) add(`request: intent.mode must be one of ${MODES.join(", ")}`);
     if (!Array.isArray(value.intent.preserve) || value.intent.preserve.some((x) => !nonEmptyString(x))) {
       add("request: intent.preserve must be an array of non-empty strings");
@@ -58,6 +58,17 @@ function normalizeRequest(input) {
     modelEnv: "BELLOWS_MODEL",
     endpointPath: "/v1/chat/completions",
     requiredForModelCalls: true,
+    messageContracts: {
+      text: "openai-compatible-string",
+      vision: "openai-compatible-content-parts",
+      partTypes: ["text", "image_url"],
+      imageUrlDetails: ["auto", "low", "high"],
+      imageTransports: ["data-url", "https-url"],
+    },
+    visionPayloadPolicy: {
+      buildInlineDataAtExecution: true,
+      persistInlineImageData: false,
+    },
     ...(request.ai || {}),
   };
   request.options = request.options || {};
@@ -251,6 +262,8 @@ function buildBundle(input) {
       "all LLM/provider calls use BELLOWS; tools never call providers directly",
       "local deterministic runtimes such as rembg/ONNX remain local and are not routed through a chat gateway",
       "BELLOWS credentials are referenced by environment-variable names and never written into bundles",
+      "vision calls use OpenAI-compatible text/image_url content parts through BELLOWS",
+      "inline image data is created only at execution time and is never persisted in LAB bundles",
     ],
   };
 }
@@ -280,6 +293,9 @@ module.exports = {
   MODES,
   resolveBellowsConfig,
   callBellows,
+  callBellowsVision,
+  createVisionMessage,
+  imageFileToDataUrl,
   validateRequest,
   normalizeRequest,
   buildPlan,
