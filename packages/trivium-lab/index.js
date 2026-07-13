@@ -3,8 +3,9 @@
 const fs = require("fs");
 const path = require("path");
 const { validatePlan } = require("../trivium-contracts");
+const { resolveBellowsConfig, callBellows } = require("./bellows-client");
 
-const MODULE_VERSION = "0.1.0";
+const MODULE_VERSION = "0.2.0";
 const REQUEST_VERSION = "1.0.0";
 const BUNDLE_VERSION = "1.0.0";
 const SOURCE_KINDS = Object.freeze(["archive", "binary", "directory", "image-set", "video", "capture"]);
@@ -22,10 +23,21 @@ function validateRequest(value) {
     if (!nonEmptyString(value.source.path)) add("request: source.path is required");
     if (value.source.ownershipConfirmed !== true) add("request: source.ownershipConfirmed must be true");
     if (!nonEmptyString(value.source.provenance)) add("request: source.provenance is required");
+    if (value.source.manifestPath !== undefined && !nonEmptyString(value.source.manifestPath)) add("request: source.manifestPath must be a non-empty string");
+    if (value.source.formatHint !== undefined && !nonEmptyString(value.source.formatHint)) add("request: source.formatHint must be a non-empty string");
+  }
+  if (value.ai !== undefined) {
+    if (!isObject(value.ai)) add("request: ai must be an object");
+    else {
+      if (value.ai.gateway !== undefined && value.ai.gateway !== "bellows") add("request: ai.gateway must be bellows");
+      for (const field of ["baseUrlEnv", "apiKeyEnv", "modelEnv"]) {
+        if (value.ai[field] !== undefined && !nonEmptyString(value.ai[field])) add(`request: ai.${field} must be a non-empty string`);
+      }
+    }
   }
   if (!isObject(value.intent)) add("request: intent object is required");
   else {
-    if (value.intent.target !== "shaded") add("request: LAB v0.1 currently supports intent.target='shaded'");
+    if (value.intent.target !== "shaded") add("request: LAB v0.2 currently supports intent.target='shaded'");
     if (!MODES.includes(value.intent.mode)) add(`request: intent.mode must be one of ${MODES.join(", ")}`);
     if (!Array.isArray(value.intent.preserve) || value.intent.preserve.some((x) => !nonEmptyString(x))) {
       add("request: intent.preserve must be an array of non-empty strings");
@@ -39,6 +51,15 @@ function normalizeRequest(input) {
   if (!result.ok) throw new Error(result.errors.join("; "));
   const request = clone(input);
   request.title = request.title || request.id;
+  request.ai = {
+    gateway: "bellows",
+    baseUrlEnv: "BELLOWS_BASE_URL",
+    apiKeyEnv: "BELLOWS_API_KEY",
+    modelEnv: "BELLOWS_MODEL",
+    endpointPath: "/v1/chat/completions",
+    requiredForModelCalls: true,
+    ...(request.ai || {}),
+  };
   request.options = request.options || {};
   request.options.extraction = {
     assets: true,
@@ -147,6 +168,7 @@ function createHandoffs(input) {
     jobId: request.id,
     title: request.title,
     provenance: request.source.provenance,
+    aiGateway: request.ai,
   };
   return {
     decompile: {
@@ -226,6 +248,9 @@ function buildBundle(input) {
       "SWIFT actors remain presentation-only in SHADED",
       "SHADED material truth comes from the background scene, not actors",
       "ownership or authorization must be confirmed before extraction",
+      "all LLM/provider calls use BELLOWS; tools never call providers directly",
+      "local deterministic runtimes such as rembg/ONNX remain local and are not routed through a chat gateway",
+      "BELLOWS credentials are referenced by environment-variable names and never written into bundles",
     ],
   };
 }
@@ -253,6 +278,8 @@ module.exports = {
   BUNDLE_VERSION,
   SOURCE_KINDS,
   MODES,
+  resolveBellowsConfig,
+  callBellows,
   validateRequest,
   normalizeRequest,
   buildPlan,
