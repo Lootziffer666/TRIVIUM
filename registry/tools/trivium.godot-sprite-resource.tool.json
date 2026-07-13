@@ -1,0 +1,48 @@
+{
+  "contractVersion": "0.1.0",
+  "id": "trivium.godot-sprite-resource",
+  "kind": "tool",
+  "source": {
+    "type": "trivium",
+    "provenance": "tools/recipes/godot-sprite-resource.js",
+    "license": "project"
+  },
+  "repository": "local/tools/recipes/godot-sprite-resource.js",
+  "license": "project",
+  "last_verified": "2026-07-12",
+  "source_versions": [
+    "fixture-v1"
+  ],
+  "target_versions": [
+    "fixture-v1"
+  ],
+  "execution_mode": "cli",
+  "headless": true,
+  "accepts": [
+    "png.atlas",
+    "json"
+  ],
+  "produces": [
+    "godot.tres",
+    "json"
+  ],
+  "capabilities": [
+    "emit_godot_spriteframes_resource"
+  ],
+  "unknown": [],
+  "known_losses": [
+    "fixture implementation; production renderer fidelity is not proven"
+  ],
+  "manual_steps": [
+    "replace fixture renderer with Blender or engine renderer for production"
+  ],
+  "fixture": "examples/plans/guard-sprite-bake.plan.json",
+  "evidence": "fixtures/out/guard.sprite.evidence-dossier.json",
+  "confidence": 0.3,
+  "status": "verified",
+  "execution": {
+    "mode": "cli",
+    "headless": true,
+    "command": "node"
+  }
+}

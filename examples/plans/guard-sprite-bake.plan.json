@@ -1,0 +1,40 @@
+{
+  "planVersion": "0.1.0",
+  "id": "guard-sprite-bake",
+  "route": "project",
+  "source": {
+    "artifact": "fixtures/out/guard.normalized.glb",
+    "contractRef": "examples/contracts/actor.guard.asset.contract.json"
+  },
+  "target": {
+    "runtime": "godot",
+    "form": "sprite2d"
+  },
+  "steps": [
+    {
+      "id": "render_frames",
+      "tool": "trivium.render-eight-direction",
+      "inputs": ["fixtures/out/guard.normalized.glb"],
+      "produces": ["fixtures/out/frames/frames.json"],
+      "args": ["tools/recipes/render-eight-direction.js", "fixtures/out/guard.normalized.glb", "fixtures/out/frames", "fixtures/out/frames/frames.json"]
+    },
+    {
+      "id": "pack_atlas",
+      "tool": "trivium.atlas-pack",
+      "inputs": ["fixtures/out/frames/frames.json"],
+      "produces": ["fixtures/out/guard.atlas.png", "fixtures/out/guard.atlas.json"],
+      "args": ["tools/recipes/atlas-pack.js", "fixtures/out/frames/frames.json", "fixtures/out/guard.atlas.png", "fixtures/out/guard.atlas.json"]
+    },
+    {
+      "id": "emit_godot_resource",
+      "tool": "trivium.godot-sprite-resource",
+      "inputs": ["fixtures/out/guard.atlas.json"],
+      "produces": ["fixtures/out/guard.tres", "fixtures/out/guard.sprite.report.json"],
+      "args": ["tools/recipes/godot-sprite-resource.js", "fixtures/out/guard.atlas.json", "fixtures/out/guard.tres", "fixtures/out/guard.sprite.report.json"]
+    }
+  ],
+  "verify": {
+    "contractRef": "examples/contracts/verify.guard.sprite-bake.evidence.contract.json"
+  },
+  "fallbacks": ["manual_silhouette_score", "human_review_animation_quality"]
+}
